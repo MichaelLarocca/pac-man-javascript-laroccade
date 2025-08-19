@@ -1,8 +1,4 @@
 import { levelComplete, counterPelet, fruitBonus, fruitBonusValue, resetGhosts, removeGhosts, startGhosts, eyeSize, ghostSize, Ghost, ghosts, checkForHighScore } from './helper-functions.js';
-// export function changeText(text) {
-//   const changeText = document.getElementById("title");
-//   changeText.innerText = text;
-// }
 export const squares = [];
 export const gameGrid = document.getElementById("game-grid");
 
@@ -514,45 +510,3 @@ export function buildGameBoard(){
   // setLairText();
 } // function buildGameBoard
 
-// checkForHighScore();
-
-// Ghosts
-// class Ghost {
-//   constructor (className, startIndex, speed, size, color, eyes) {
-//     this.className = className;
-//     this.startIndex = startIndex;
-//     this.speed = speed;
-//     this.size = size;
-//     this.color = color;
-//     this.eyes = eyes;
-//     this.currentIndex = startIndex;
-//     this.isScard = false;
-//     this.timerId = NaN;
-//   }
-// }
-
-// export const ghosts = [
-//   new Ghost ('blinky', 321, 200,'ghost-small', 'ghost-red', 'ghost-look-left-small'),
-//   new Ghost ('blinky', 376, 200,'ghost-small', 'ghost-blue', 'ghost-look-up-small'),
-//   new Ghost ('pinky', 377, 200,'ghost-small', 'ghost-pink', 'ghost-look-down-small'),
-//   new Ghost ('blinky', 378, 200,'ghost-small', 'ghost-orange', 'ghost-look-up-small'),
-// ];
-
-// export function startGhosts() {
-//   ghosts.forEach(ghost => {
-//     squares[ghost.currentIndex].classList.add(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes);
-//   })
-// }
-  
-// export function moveGhost(ghost) {
-//   const directions = [-1,1,28, -28];
-//   const direction = directions[Math.floor(Math.random() * directions.length)];
-  
-//   ghost.timerId = setInterval(function() {
-//     squares[ghost.currentIndex].classList.remove(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes);
-//     ghost.currentIndex += direction;
-//     squares[ghost.currentIndex].classList.add(ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes);
-//   }, ghost.speed);
-// }
-
-// ghosts.forEach(ghost => moveGhost(ghost))

@@ -1,7 +1,6 @@
 import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen } from './game-board.js';
-// import { flagToggled, toggleTittleAndScoreScreen } from '/main.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
-// High Score
+
 export let score = 0;
 export let highScore;
   

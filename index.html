@@ -2,12 +2,102 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <link rel="icon" type="image/svg+xml" href="/icon-pacman.png" />
+    <link rel="stylesheet" href="main.processed.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous" />
+    <title>Pac-Man</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+
+    <div id="ctn-game">    
+        <div id="instructions">
+        <p><h3>Instructions</h3></p>
+        <p>Use arrow keys to control Pac-Man.</p> 
+        <p>Eat the Pac-Dot's, Power Pellets, and fruits to score points.</p>   
+        <p>Watch out for the ghosts!</p>   
+    <!--     <p>___________</p> -->
+      
+        <p id="instruct">Press: "S" or <i id="instruct-start-game" class="fas fa-male"></i> to START</p>
+      </div>
+      
+      <div id="credits">
+        <p><h3>Scrimba</h3></p>
+        <p>This Project is based on Scrimba's Pac-Man game project.</p> 
+        <p>By: Ania Kubow</p>   
+      </div>  
+      
+      <div id="section-middle">
+      <div id="ctn-section-1">    
+        <div id="title">
+                  <div id="marquee-border">
+                  <div id="marquee">
+                      <h1>PAC - MAN</h1>
+                  </div>  
+      <!--    </div> title /            -->
+                  <div id="toggle "class="toggle">
+                    <p>Toggle full screen:</p>
+                      <p id="lightenText" class="toggle-text">On</p>
+                      <div id="toggleBtn" class="toggle-btn">
+                          <div id="inner-circle" class="inner-circle inner-circle-pac-man-right"></div>
+                      </div>
+                      <p id="darkenText" class="toggle-text unselected">Off</p>
+                  </div>
+              </div>
+        </div> <!-- title -->
+        <div id="score-top" class="score-top">
+          <h3 id="score-display-fs">Score: <span id="score-display"></span></h3>
+          <h3 id="high-score-display-fs">High Score: <span id="high-score-display"></span></h3>
+        </div>
+      </div> <!-- ctn-section-1 --> 
+      <div id="ctn-section-2">
+      <div id="game-grid"></div>
+        </div> <!-- ctn-section-2 -->
+      <div id="ctn-section-3">
+        <div id="ctn-level-bottom" class="ctn-level-bottom">
+          <h4 id="ctn-pac-man-lives"></h4>   
+          <h4 id="level-bottom"</h4>
+        </div>  
+      
+        <div id="controller">
+    <!--       <p>Controller</p>   -->
+          
+          <div id="control-board-upper">
+
+            <div id="control-left-logo"><br /><span id="control-left-logo-games"></span></div>
+            <div id="control-middle-joy-stick">
+              <div></div>
+              <div id="joystick-up"><i class="fas fa-arrow-up"></i></div>
+              <div></div>
+              <div id="joystick-left"><i class="fas fa-arrow-left"></i></div>
+              <div></div>
+              <div id="joystick-right"><i class="fas fa-arrow-right"></i></div>
+              <div></div>
+              <div id="joystick-down"><i class="fas fa-arrow-down"></i></div>
+              <div></div>
+            </div>
+            <div id="control-right">
+              <div id="control-board-button-1"><i id="player-1-start" class="fas fa-male"></i></div>
+              <!--               <div id="control-board-button-pause"><i class="fas fa-pause"></i></div> -->
+            </div>
+
+          </div>
+
+          </div>           
+          </div>        
+
+        </div> <!--controller -->
+      </div> <!-- ctn-section-3 -->  
+      
+      
+    </div> <!--section-middle-->
+
+    </div> <!--ctn-game-->
+
+    </div> <!-- id="app" -->
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

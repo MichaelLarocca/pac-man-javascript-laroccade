@@ -1,0 +1,392 @@
+@import "_mixins";
+
+body {
+  background-color: #333;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ghost Colors */
+.ghost-red {
+  background-color: rgb(255,12,14);
+}
+.ghost-pink {
+  background-color: rgb(255,165,166);
+}
+.ghost-blue {
+  background-color: rgb(147,255,255);
+}
+.ghost-orange {
+  background-color: rgb(253,123,13);
+}
+
+/* Ghost Small */
+.ghost-small {
+  border: 0.05px solid white;
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  clip-path: polygon(50% 0%, 100% 0, 100% 100%, 81% 91%, 66% 100%, 49% 91%, 31% 100%, 15% 91%, 0 100%, 0 0);
+}
+
+.ghost-small::before {
+  border: 0.6px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 1.5px;
+  height: 1.5px;
+  position: absolute;
+  bottom: 5px;
+  margin: 0 0 0 2.5px;
+}
+
+.ghost-small::after {
+  border: 0.6px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 1.5px;
+  height: 1.5px;
+  position: absolute;
+  bottom: 5px;
+  margin: 0 0 0 5px;
+}
+
+/* look-up */
+.ghost-look-up-small {
+  border: 0.05px solid white;
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+
+.ghost-look-up-small::before {
+  border: 0.6px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 1.5px;
+  height: 1.5px;
+  position: absolute;
+  bottom: 6.25px;
+  // margin: 0 0 0 2.5px;
+  margin: 0 0 0 2.0px;
+}
+
+.ghost-look-up-small::after {
+  border: 0.6px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 1.5px;
+  height: 1.5px;
+  position: absolute;
+  bottom: 6.25px;
+  // margin: 0 0 0 5px;
+  margin: 0 0 0 5px;
+}
+
+/* look-down */
+.ghost-look-down-small {
+  border: 0.05px solid white;
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+
+.ghost-look-down-small::before {
+  border: 0.6px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 1.5px;
+  height: 1.5px;
+  position: absolute;
+  bottom: 3.75px;
+  // margin: 0 0 0 2.5px;
+  margin: 0 0 0 2.5px;
+}
+
+.ghost-look-down-small::after {
+  border: 0.6px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 1.5px;
+  height: 1.5px;
+  position: absolute;
+  bottom: 3.75px;
+  // margin: 0 0 0 5px;
+  margin: 0 0 0 5px;
+}
+
+/* look-left */
+.ghost-look-left-small {
+  border: 0.05px solid white;
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+
+.ghost-look-left-small::before {
+  border: 0.6px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 1.5px;
+  height: 1.5px;
+  position: absolute;
+  bottom: 5px;
+  margin: 0 0 0 1.25px;
+}
+
+.ghost-look-left-small::after {
+  border: 0.6px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 1.5px;
+  height: 1.5px;
+  position: absolute;
+  bottom: 5px;
+  margin: 0 0 0 3.75px;
+}
+
+/* look-right */
+.ghost-look-right-small {
+  border: 0.05px solid white;
+  position: relative;
+  width: 10px;
+  height: 10px;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+
+.ghost-look-right-small::before {
+  border: 0.6px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 1.5px;
+  height: 1.5px;
+  position: absolute;
+  bottom: 5px;
+  margin: 0 0 0 3.75px;
+}
+
+.ghost-look-right-small::after {
+  border: 0.6px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 1.5px;
+  height: 1.5px;
+  position: absolute;
+  bottom: 5px;
+  margin: 0 0 0 6.25px;
+}
+
+/* Ghost Large */
+.ghost-large {
+  border: 0.1px solid white;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  clip-path: polygon(50% 0%, 100% 0, 100% 100%, 81% 91%, 66% 100%, 49% 91%, 31% 100%, 15% 91%, 0 100%, 0 0);
+}
+
+.ghost-large::before {
+  border: 1.2px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 3px;
+  height: 3px;
+  position: absolute;
+  bottom: 10px;
+  margin: 0 0 0 3px;
+}
+
+.ghost-large::after {
+  border: 1.2px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 3px;
+  height: 3px;
+  position: absolute;
+  bottom: 10px;
+  margin: 0 0 0 13px;
+}
+
+/* look-up */
+.ghost-look-up-large {
+  border: 0.1px solid white;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+
+.ghost-look-up-large::before {
+  border: 1.2px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 3px;
+  height: 3px;
+  position: absolute;
+  bottom: 12.5px;
+  margin: 0 0 0 5px;
+}
+
+.ghost-look-up-large::after {
+  border: 1.2px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 3px;
+  height: 3px;
+  position: absolute;
+  bottom: 12.5px;
+  margin: 0 0 0 10px;
+}
+
+/* look-down */
+.ghost-look-down-large {
+  border: 0.1px solid white;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+
+.ghost-look-down-large::before {
+  border: 1.2px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 3px;
+  height: 3px;
+  position: absolute;
+  bottom: 7.5px;
+  margin: 0 0 0 5px;
+}
+
+.ghost-look-down-large::after {
+  border: 1.2px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 3px;
+  height: 3px;
+  position: absolute;
+  bottom: 7.5px;
+  margin: 0 0 0 10px;
+}
+
+/* look-left */
+.ghost-look-left-large {
+  border: 0.1px solid white;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+
+.ghost-look-left-large::before {
+  border: 1.2px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 3px;
+  height: 3px;
+  position: absolute;
+  bottom: 10px;
+  margin: 0 0 0 2.5px;
+}
+
+.ghost-look-left-large::after {
+  border: 1.2px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 3px;
+  height: 3px;
+  position: absolute;
+  bottom: 10px;
+  margin: 0 0 0 7.5px;
+}
+
+/* look-right */
+.ghost-look-right-large {
+  border: 0.1px solid white;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+}
+
+.ghost-look-right-large::before {
+  border: 1.2px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 3px;
+  height: 3px;
+  position: absolute;
+  bottom: 10px;
+  margin: 0 0 0 7.5px;
+}
+
+.ghost-look-right-large::after {
+  border: 1.2px solid white;
+  border-radius: 50%;
+  background-color: black;
+  content: "";
+  width: 3px;
+  height: 3px;
+  position: absolute;
+  bottom: 10px;
+  margin: 0 0 0 13px;
+}
+
+/* Scared */
+.scared {
+  background-color: blue;
+}
+
+.scared::before,
+.scared::after {
+  background-color: white;
+}
+
+.scaredBlink {
+  animation: scaredBlink .01s 1;
+  // animation-delay: 500ms;
+}
+
+@keyframes scaredBlink {
+  0% {
+    background: whitesmoke;
+  }
+  100% {
+    background: blue;
+  }
+}

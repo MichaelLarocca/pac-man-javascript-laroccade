@@ -1,0 +1,65 @@
+// Pac-Man Lives
+#ctn-pac-man-lives {display: flex;}
+
+.pac-man-lives {
+  border: 1px solid black;
+  background-color: orange;
+  border-radius: 50%;
+  height: var(--game-grid-div-height-small);
+  width: var(--game-grid-div-width-small);
+  clip-path: polygon(100% 0, 100% 0, 50% 50%, 50% 50%, 100% 100%, 100% 100%, 0 100%, 0 50%, 0 0);
+}
+
+// Pac Man
+.pacMan {
+    background-color: orange;
+    border-radius: 50%;
+}
+
+.pacMan-move-left {
+   animation: pacManMoveLeft .3s infinite;
+}
+.pacMan-move-right {
+   animation: pacManMoveRight .3s infinite;
+}
+.pacMan-move-up {
+   animation: pacManMoveUp .3s infinite;
+}
+.pacMan-move-down {
+   animation: pacManMoveDown .3s infinite;
+}
+.pacMan-move-stop {
+   animation: pacManMoveStop .3s infinite;
+}
+.pacMan-move-die {
+   // animation: pacManMoveDie 3s 1;
+   animation: pacManMoveDie 3s forwards;
+}
+
+@keyframes pacManMoveLeft {
+  0% {clip-path: polygon(0 0, 100% 0, 100% 30%, 100% 70%, 100% 100%, 0 100%, 61% 53%, 61% 53%);};
+  100% {};  
+}
+@keyframes pacManMoveRight {
+  0% {clip-path: polygon(100% 0, 100% 0, 49% 53%, 49% 52%, 100% 100%, 100% 100%, 0 100%, 0 50%, 0 0);}
+  100% {}
+}
+@keyframes pacManMoveUp {
+  0% {clip-path: polygon(100% 0, 100% 0, 100% 51%, 100% 55%, 100% 100%, 100% 100%, 0 100%, 1% 0, 52% 59%);};
+  100% {};  
+}
+@keyframes pacManMoveDown {
+  0% {clip-path: polygon(0 0, 100% 0, 100% 30%, 100% 100%, 51% 45%, 0 100%, 0% 30%);};
+  100% {};  
+}
+@keyframes pacManMoveStop {
+  0% {};
+  100% {};  
+}
+@keyframes pacManMoveDie {
+  0% {clip-path: polygon(51% 43%, 100% 43%, 100% 43%, 100% 100%, 68% 100%, 32% 100%, 0 100%, 0% 43%, 0 43%);};
+  25% {clip-path: polygon(51% 43%, 100% 70%, 100% 70%, 100% 100%, 68% 100%, 32% 100%, 0 100%, 0% 43%, 0 70%);};
+  50% {clip-path: polygon(51% 43%, 100% 100%, 100% 100%, 100% 100%, 68% 100%, 32% 100%, 0 100%, 0% 43%, 0 100%);}
+  75% {clip-path: polygon(51% 43%, 68% 100%, 67% 100%, 67% 100%, 68% 100%, 32% 100%, 0 100%, 33% 100%, 32% 100%);}
+  100% {clip-path: polygon(51% 43%, 50% 100%, 50% 100%, 50% 100%, 52% 100%, 51% 100%, 51% 100%, 52% 100%, 50% 100%);}
+}

@@ -1,0 +1,94 @@
+@import "_mixins";
+
+#game-grid {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: var(--game-grid-min-width-small);
+  max-width: var(--game-grid-max-width-small);
+  
+  // min-width: var(--game-grid-min-width-large);
+  // max-width: var(--game-grid-max-width-large);
+  
+  border: solid #111 3px;
+  color: orange;
+  margin: 0 auto;
+}
+
+#game-grid div {
+  // border: 1px solid whitesmoke;
+  height: var(--game-grid-div-height-small);
+  width: var(--game-grid-div-width-small);
+  //  background-color: red;
+  // height: var(--game-grid-div-height-large);
+  // width: var(--game-grid-div-width-large);
+}
+
+.game-board-square {
+  border: 1px solid black;
+  height: var(--game-grid-div-height-small);
+  width: var(--game-grid-div-width-small);
+  // background-color: red;
+//   height: var(--game-grid-div-height-large);
+//   width: var(--game-grid-div-width-large); 
+}
+
+.wall {
+  background-color: var(--color-wall);
+  border-color: var(--color-wall) !important;
+}
+
+.level-completed {
+  animation: levelCompleted .5s 4 forwards;
+}
+@keyframes levelCompleted {
+  0%   {--color-wall: lightgray;};
+  100%  {--color-wall: rgb(28,28,139);};
+}
+
+.powerPellet {
+  background-color: black;
+  border-radius: 50%;
+  transform: scale(.7);
+  animation: powerPelletBlink 0.3s infinite;
+}
+
+@keyframes powerPelletBlink {
+  0% {
+    background: whitesmoke;
+  }
+  100% {
+    background: black;
+  }
+}
+
+.pellet {
+  background-color: whitesmoke;
+  transform: scale(0.2);
+}
+
+.lairWall {
+  background-color: white;
+  transform: scaleY(0.3);
+}
+.lairText {
+  text-align: center;
+}
+.bonusFruit::after {
+  content: "🍒";
+}
+.roundTopLeft {
+  border-top-left-radius: 50%;
+  background-color: var(--color-wall);
+}
+.roundTopRight {
+  border-top-right-radius: 50%;
+  background-color: var(--color-wall);
+}
+.roundBottomLeft {
+  border-bottom-left-radius: 50%;
+  background-color: var(--color-wall);
+}
+.roundBottomRight {
+  border-bottom-right-radius: 50%;
+  background-color: var(--color-wall);
+}

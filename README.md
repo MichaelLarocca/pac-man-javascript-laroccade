@@ -4,7 +4,7 @@ A modern, vanilla JavaScript implementation of the classic Pac-Man arcade game, 
 
 [**Play the live game here!**](https://pac-man-javascript-laroccade.netlify.app/)
 
-![Pac-Man Logo](public/images/LC-Pac-Man-screen-shot.png)
+![Pac-Man Logo](/public/images/LC-Pac-Man-screen-shot.png)
 
 ## Features
 
@@ -26,3 +26,14 @@ A modern, vanilla JavaScript implementation of the classic Pac-Man arcade game, 
    ```bash
    git clone https://github.com/MichaelLarocca/pac-man-javascript-laroccade.git
    cd pac-man-javascript-laroccade
+   ```
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+## License
+
+[MIT](LICENSE)

@@ -2,6 +2,8 @@
 
 A modern, vanilla JavaScript implementation of the classic Pac-Man arcade game, built with Vite.
 
+[**Play the live game here!**](https://pac-man-javascript-laroccade.netlify.app/)
+
 ![Pac-Man Logo](public/images/LC-Pac-Man-screen-shot.png)
 
 ## Features

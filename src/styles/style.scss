@@ -1,7 +1,12 @@
-@import "_mixins";
-@import "_game-board";
-@import "_ghosts";
-@import "_pacman";
+// @import "_mixins";
+// @import "_game-board";
+// @import "_ghosts";
+// @import "_pacman";
+
+@use "_mixins";
+@use "_game-board";
+@use "_ghosts";
+@use "_pacman";
 
 body {
   box-sizing: border-box;
@@ -295,7 +300,7 @@ font-family: 'Monoton', cursive;
   }
   
   #control-left-logo {
-  background-image: url(../../public/images/LaRocCade-01.png);
+  background-image: url(/images/LaRocCade-01.png);
   
   height: 75px; /* You must set a specified height */
   background-position: center; /* Center the image */

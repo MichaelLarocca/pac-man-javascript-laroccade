@@ -1,9 +1,10 @@
 import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
+import { soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1 } from './audio.js';
 
 export let score = 0;
 export let highScore;
-  
+
 let timerPowerPellet;
 
 if(JSON.parse(localStorage.getItem("highScore")) !== null) {
@@ -44,7 +45,7 @@ let speedStartPacMan;
 export let pacManSpeed = 200;
 // export let pacManSpeed = 160;
 
-//Controler
+//Controller
 export const btnStart = document.getElementById("control-board-button-1");
 export const joystickUp = document.getElementById("joystick-up");
 export const joystickDown = document.getElementById("joystick-down");
@@ -405,7 +406,7 @@ export function levelStart() {
     
     // Start Ghosts
     ghosts.forEach(ghost => moveGhost(ghost))
-  }, 3000);
+  }, 4250);
 } // setPacManSpeed
 
 // Use K to kill Pac-Man
@@ -614,6 +615,10 @@ function resetPacMan(){
 }
 
 export function gameStart() {
+  // soundGhostSiren1.loop = false;
+  // soundGhostSiren1.pause();
+  // soundGhostSiren1.currentTime = 0;
+  soundGameStart.play();
   // clearInterval(toggleTittleAndScoreScreen);
   // clearInterval(startToggleTittleAndScoreScreen);
   endToggleTitleAndScoreScreen();
@@ -846,6 +851,9 @@ export function moveGhost(ghost) {
   //    squares[ghost.currentIndex].classList.remove('scaredBlink');
   //   // setTimeout(()=>{ squares[ghost.currentIndex].classList.add('scaredBlink'); }, 5000);
   // }
+
+  soundGhostSiren1.loop = true;
+  soundGhostSiren1.play();
   
   const directions = [-1,1,28, -28];
   let direction = directions[Math.floor(Math.random() * directions.length)];
@@ -900,6 +908,9 @@ export function moveGhost(ghost) {
     }      
      
      if(ghost.isScared) {
+      soundGhostSiren1.pause();
+      soundGhostSiren1.currentTime = 0;
+
        // Change ghost direction when scared
        if(direction === 1 ) { direction = -1 };
        if(direction === -1 ) { direction = 1 }; 
@@ -954,6 +965,11 @@ export function moveGhost(ghost) {
 }
 
 export function unScareGhosts() {
+  if (soundGameStart.paused) {
+    soundGhostSiren1.loop = true;
+    soundGhostSiren1.play();
+  }
+
  ghosts.forEach(ghost => ghost.isScared = false);
 
   // for(let i = 0; i < squares.length; i++) {

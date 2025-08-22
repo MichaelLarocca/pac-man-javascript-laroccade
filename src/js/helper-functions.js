@@ -1,6 +1,6 @@
 import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
-import { soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1 } from './audio.js';
+import { stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
 
 export let score = 0;
 export let highScore;
@@ -331,6 +331,7 @@ export function control(x) {
   } // control
 
 function fruitScoreBonus(){
+  soundPacManEatingFruit.play();
   if(level < 12) {
     score += fruitBonusValue[level-1];
     squares[433].style.color = 'whitesmoke';
@@ -372,6 +373,7 @@ function setPacManSpeed() {
 }
 
 export function levelStart() {
+    
     flagBonusLife = false;
   
     scoreDisplay.innerHTML = score;
@@ -439,6 +441,8 @@ export function checkForGhostCatchesPacMan() {
 }
 
 export function loseLife(){
+  stopAllSounds();
+  soundDeath.play();
   lives -= 1;
   
   if(lives>0){
@@ -618,7 +622,11 @@ export function gameStart() {
   // soundGhostSiren1.loop = false;
   // soundGhostSiren1.pause();
   // soundGhostSiren1.currentTime = 0;
-  soundGameStart.play();
+  if(level === 0){
+    soundGameStart.play();
+      console.log(`soundGameStart.play(): level ${level}`);
+  }
+  
   // clearInterval(toggleTittleAndScoreScreen);
   // clearInterval(startToggleTittleAndScoreScreen);
   endToggleTitleAndScoreScreen();
@@ -826,7 +834,12 @@ export function removeGhosts() {
   })  
 }
 
-export function resetGhosts(ghost) { 
+export function resetGhosts(ghost) {
+  
+  if (soundGameStart.paused) {
+    stopAllSounds(); 
+  }
+
   ghosts.forEach(ghost => clearInterval(ghost.timerId));
   removeGhosts();
   
@@ -839,6 +852,7 @@ export function resetGhosts(ghost) {
 }
 
 export function resetGhostsSpeed(ghost) {
+  
   ghosts[0].speed = 225; // blinky 
   ghosts[1].speed = 275; // inky
   ghosts[2].speed = 250; // pinky

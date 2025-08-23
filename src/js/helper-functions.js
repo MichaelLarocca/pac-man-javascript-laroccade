@@ -1,6 +1,6 @@
 import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
-import { stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
+import { playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
 
 export let score = 0;
 export let highScore;
@@ -15,6 +15,10 @@ if(JSON.parse(localStorage.getItem("highScore")) !== null) {
 
 export function checkForHighScore() {
       if(score >= highScore) {
+        // if(score !== 0) {
+        //   soundHighScore.play();
+        // }
+
         highScore = score;
         localStorage.setItem("highScore", JSON.stringify(highScore));
         highScore = JSON.parse(localStorage.getItem("highScore"));
@@ -306,9 +310,10 @@ export function control(x) {
     if(squares[pacmanCurrentIndex].classList.contains('powerPellet')){
       squares[pacmanCurrentIndex].classList.remove('powerPellet');
       score += 50; 
+      soundPowerUp.play();
         clearTimeout(timerPowerPellet);
       ghosts.forEach(ghost => ghost.isScared = true);
-        timerPowerPellet = setTimeout(unScareGhosts, 10000);
+        timerPowerPellet = setTimeout(unScareGhosts, 9000);
     }
     if(squares[pacmanCurrentIndex].classList.contains('bonusFruit')) {
       squares[pacmanCurrentIndex].classList.remove('bonusFruit');
@@ -494,6 +499,7 @@ function extraLife() {
       counterExtraLife += 1;  
       lives += 1;
       flagBonusLife = true;
+      soundHighScore.play();
         // console.log(`extraLife: ${lives}`);
         // console.log(`flagBonusLife: ${flagBonusLife}`)
         // console.log(`Lives: ${lives}`);
@@ -757,6 +763,8 @@ export function removePacMan() {
 }
 
 export function levelComplete() {
+
+  stopAllSounds();
      // Code for Level Complete
   // clearInterval(speedStartPacMan);
   clearInterval(speedStartPacMan);
@@ -956,6 +964,9 @@ export function moveGhost(ghost) {
      } // if(ghost.isScared)
     
     if(ghost.isScared && squares[ghost.currentIndex].classList.contains('pacMan')) {
+      
+      playGhostEatenSounds();
+
       ghostsEaten += 1;
       score += ghostsEaten * 400;
         console.log(`ghostsEaten score: ${ghostsEaten * 400}`);

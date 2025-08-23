@@ -11,6 +11,9 @@ export const soundHighScore = new Audio("../assets/audio/high-score.mp3");
 export const soundPacManEatingPellets = new Audio("../assets/audio/pac-man-eating-pellets.mp3");
 export const soundPowerUp = new Audio("../assets/audio/power-up.mp3");
 
+// Adjust sound volumes
+soundGhostSiren1.volume = 0.3;
+
 // Preload sounds to avoid delays
 [
   soundCutscene,
@@ -47,4 +50,16 @@ export function stopAllSounds() {
 	  sound.pause();
 	  sound.currentTime = 0; // Reset playback to the beginning
 	});
+  }
+
+  export function playGhostEatenSounds() {
+	soundEatingGhost.pause();
+	soundEatingGhost.currentTime = 0;
+	soundGhostRunningAway.pause();
+	soundGhostRunningAway.currentTime = 0;
+	
+	soundEatingGhost.play();
+	setTimeout(() => {
+	  soundGhostRunningAway.play();
+	}, 1000);
   }

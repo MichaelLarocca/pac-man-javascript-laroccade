@@ -1,9 +1,10 @@
 import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
+import { playSiren, stopSiren, switchToSiren2, stopPacManEatingPelletsSound, playPacManEatingPelletsSound, playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
 
 export let score = 0;
 export let highScore;
-  
+
 let timerPowerPellet;
 
 if(JSON.parse(localStorage.getItem("highScore")) !== null) {
@@ -14,6 +15,10 @@ if(JSON.parse(localStorage.getItem("highScore")) !== null) {
 
 export function checkForHighScore() {
       if(score >= highScore) {
+        // if(score !== 0) {
+        //   soundHighScore.play();
+        // }
+
         highScore = score;
         localStorage.setItem("highScore", JSON.stringify(highScore));
         highScore = JSON.parse(localStorage.getItem("highScore"));
@@ -44,7 +49,7 @@ let speedStartPacMan;
 export let pacManSpeed = 200;
 // export let pacManSpeed = 160;
 
-//Controler
+//Controller
 export const btnStart = document.getElementById("control-board-button-1");
 export const joystickUp = document.getElementById("joystick-up");
 export const joystickDown = document.getElementById("joystick-down");
@@ -296,18 +301,25 @@ export function control(x) {
     }
     // Collision and Points
     if(squares[pacmanCurrentIndex].classList.contains('pellet')) {
+      
+      playPacManEatingPelletsSound();
+
       squares[pacmanCurrentIndex].classList.remove('pellet');
       counterPelet += 1;
         // console.log(`counterPelet: ${counterPelet}`);
       score += 10;
         // console.log(`score: ${score}`);
+    } else {
+      stopPacManEatingPelletsSound(); // Stop the sound when Pac-Man moves without eating a pellet
     }
     if(squares[pacmanCurrentIndex].classList.contains('powerPellet')){
       squares[pacmanCurrentIndex].classList.remove('powerPellet');
       score += 50; 
+      stopSiren();
+      soundPowerUp.play();
         clearTimeout(timerPowerPellet);
       ghosts.forEach(ghost => ghost.isScared = true);
-        timerPowerPellet = setTimeout(unScareGhosts, 10000);
+        timerPowerPellet = setTimeout(unScareGhosts, 9000);
     }
     if(squares[pacmanCurrentIndex].classList.contains('bonusFruit')) {
       squares[pacmanCurrentIndex].classList.remove('bonusFruit');
@@ -327,9 +339,12 @@ export function control(x) {
     scoreDisplay.innerText = score;
     // highScoreDisplay.innerText = highScore;
     highScoreDisplaySpan.innerText = highScore;
+
+    // stopPacManEatingPelletsSound();
   } // control
 
 function fruitScoreBonus(){
+  soundPacManEatingFruit.play();
   if(level < 12) {
     score += fruitBonusValue[level-1];
     squares[433].style.color = 'whitesmoke';
@@ -371,6 +386,7 @@ function setPacManSpeed() {
 }
 
 export function levelStart() {
+    
     flagBonusLife = false;
   
     scoreDisplay.innerHTML = score;
@@ -405,7 +421,7 @@ export function levelStart() {
     
     // Start Ghosts
     ghosts.forEach(ghost => moveGhost(ghost))
-  }, 3000);
+  }, 4250);
 } // setPacManSpeed
 
 // Use K to kill Pac-Man
@@ -438,6 +454,8 @@ export function checkForGhostCatchesPacMan() {
 }
 
 export function loseLife(){
+  stopAllSounds();
+  soundDeath.play();
   lives -= 1;
   
   if(lives>0){
@@ -489,6 +507,7 @@ function extraLife() {
       counterExtraLife += 1;  
       lives += 1;
       flagBonusLife = true;
+      soundHighScore.play();
         // console.log(`extraLife: ${lives}`);
         // console.log(`flagBonusLife: ${flagBonusLife}`)
         // console.log(`Lives: ${lives}`);
@@ -614,6 +633,14 @@ function resetPacMan(){
 }
 
 export function gameStart() {
+  // soundGhostSiren1.loop = false;
+  // soundGhostSiren1.pause();
+  // soundGhostSiren1.currentTime = 0;
+  if(level === 0){
+    soundGameStart.play();
+      console.log(`soundGameStart.play(): level ${level}`);
+  }
+  
   // clearInterval(toggleTittleAndScoreScreen);
   // clearInterval(startToggleTittleAndScoreScreen);
   endToggleTitleAndScoreScreen();
@@ -693,7 +720,11 @@ function launchFruitBonus2(){
       console.log(`clearInterval(launchFruitBonus2)`)
     squares[489].classList.add('bonusFruit');
     squares[489].innerHTML = fruitBonus[level-1];
-    setTimeout(clearFruitBonus2, 10000);
+    // setTimeout(clearFruitBonus2, 10000);
+    setTimeout(() => {
+      clearFruitBonus2();
+      switchToSiren2();
+    }, 10000);
   }
 }
 
@@ -744,6 +775,8 @@ export function removePacMan() {
 }
 
 export function levelComplete() {
+
+  stopAllSounds();
      // Code for Level Complete
   // clearInterval(speedStartPacMan);
   clearInterval(speedStartPacMan);
@@ -821,7 +854,12 @@ export function removeGhosts() {
   })  
 }
 
-export function resetGhosts(ghost) { 
+export function resetGhosts(ghost) {
+  
+  if (soundGameStart.paused) {
+    stopAllSounds(); 
+  }
+
   ghosts.forEach(ghost => clearInterval(ghost.timerId));
   removeGhosts();
   
@@ -834,6 +872,7 @@ export function resetGhosts(ghost) {
 }
 
 export function resetGhostsSpeed(ghost) {
+  
   ghosts[0].speed = 225; // blinky 
   ghosts[1].speed = 275; // inky
   ghosts[2].speed = 250; // pinky
@@ -846,6 +885,10 @@ export function moveGhost(ghost) {
   //    squares[ghost.currentIndex].classList.remove('scaredBlink');
   //   // setTimeout(()=>{ squares[ghost.currentIndex].classList.add('scaredBlink'); }, 5000);
   // }
+
+  // soundGhostSiren1.loop = true;
+  // soundGhostSiren1.play();
+  playSiren();
   
   const directions = [-1,1,28, -28];
   let direction = directions[Math.floor(Math.random() * directions.length)];
@@ -900,6 +943,9 @@ export function moveGhost(ghost) {
     }      
      
      if(ghost.isScared) {
+      soundGhostSiren1.pause();
+      soundGhostSiren1.currentTime = 0;
+
        // Change ghost direction when scared
        if(direction === 1 ) { direction = -1 };
        if(direction === -1 ) { direction = 1 }; 
@@ -931,6 +977,9 @@ export function moveGhost(ghost) {
      } // if(ghost.isScared)
     
     if(ghost.isScared && squares[ghost.currentIndex].classList.contains('pacMan')) {
+      
+      playGhostEatenSounds();
+
       ghostsEaten += 1;
       score += ghostsEaten * 400;
         console.log(`ghostsEaten score: ${ghostsEaten * 400}`);
@@ -954,6 +1003,12 @@ export function moveGhost(ghost) {
 }
 
 export function unScareGhosts() {
+  if (soundGameStart.paused) {
+    // soundGhostSiren1.loop = true;
+    // soundGhostSiren1.play();
+    playSiren();
+  }
+
  ghosts.forEach(ghost => ghost.isScared = false);
 
   // for(let i = 0; i < squares.length; i++) {

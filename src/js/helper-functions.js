@@ -1,6 +1,6 @@
 import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
-import { playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
+import { stopPacManEatingPelletsSound, playPacManEatingPelletsSound, playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
 
 export let score = 0;
 export let highScore;
@@ -301,11 +301,16 @@ export function control(x) {
     }
     // Collision and Points
     if(squares[pacmanCurrentIndex].classList.contains('pellet')) {
+      
+      playPacManEatingPelletsSound();
+
       squares[pacmanCurrentIndex].classList.remove('pellet');
       counterPelet += 1;
         // console.log(`counterPelet: ${counterPelet}`);
       score += 10;
         // console.log(`score: ${score}`);
+    } else {
+      stopPacManEatingPelletsSound(); // Stop the sound when Pac-Man moves without eating a pellet
     }
     if(squares[pacmanCurrentIndex].classList.contains('powerPellet')){
       squares[pacmanCurrentIndex].classList.remove('powerPellet');
@@ -333,6 +338,8 @@ export function control(x) {
     scoreDisplay.innerText = score;
     // highScoreDisplay.innerText = highScore;
     highScoreDisplaySpan.innerText = highScore;
+
+    // stopPacManEatingPelletsSound();
   } // control
 
 function fruitScoreBonus(){

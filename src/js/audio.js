@@ -57,9 +57,20 @@ export function stopAllSounds() {
 	soundEatingGhost.currentTime = 0;
 	soundGhostRunningAway.pause();
 	soundGhostRunningAway.currentTime = 0;
-	
+
 	soundEatingGhost.play();
 	setTimeout(() => {
 	  soundGhostRunningAway.play();
 	}, 1000);
+  }
+
+  export function playPacManEatingPelletsSound() {
+	soundPacManEatingPellets.pause(); // Stop the sound if it's already playing
+	soundPacManEatingPellets.currentTime = 0; // Reset to the beginning
+	soundPacManEatingPellets.play(); // Play the sound
+  }
+  
+  export function stopPacManEatingPelletsSound() {
+	soundPacManEatingPellets.pause(); // Stop the sound
+	soundPacManEatingPellets.currentTime = 0; // Reset to the beginning
   }

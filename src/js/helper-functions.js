@@ -1,6 +1,6 @@
 import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
-import { stopPacManEatingPelletsSound, playPacManEatingPelletsSound, playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
+import { playSiren, stopSiren, switchToSiren2, stopPacManEatingPelletsSound, playPacManEatingPelletsSound, playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
 
 export let score = 0;
 export let highScore;
@@ -315,6 +315,7 @@ export function control(x) {
     if(squares[pacmanCurrentIndex].classList.contains('powerPellet')){
       squares[pacmanCurrentIndex].classList.remove('powerPellet');
       score += 50; 
+      stopSiren();
       soundPowerUp.play();
         clearTimeout(timerPowerPellet);
       ghosts.forEach(ghost => ghost.isScared = true);
@@ -719,7 +720,11 @@ function launchFruitBonus2(){
       console.log(`clearInterval(launchFruitBonus2)`)
     squares[489].classList.add('bonusFruit');
     squares[489].innerHTML = fruitBonus[level-1];
-    setTimeout(clearFruitBonus2, 10000);
+    // setTimeout(clearFruitBonus2, 10000);
+    setTimeout(() => {
+      clearFruitBonus2();
+      switchToSiren2();
+    }, 10000);
   }
 }
 
@@ -881,8 +886,9 @@ export function moveGhost(ghost) {
   //   // setTimeout(()=>{ squares[ghost.currentIndex].classList.add('scaredBlink'); }, 5000);
   // }
 
-  soundGhostSiren1.loop = true;
-  soundGhostSiren1.play();
+  // soundGhostSiren1.loop = true;
+  // soundGhostSiren1.play();
+  playSiren();
   
   const directions = [-1,1,28, -28];
   let direction = directions[Math.floor(Math.random() * directions.length)];
@@ -998,8 +1004,9 @@ export function moveGhost(ghost) {
 
 export function unScareGhosts() {
   if (soundGameStart.paused) {
-    soundGhostSiren1.loop = true;
-    soundGhostSiren1.play();
+    // soundGhostSiren1.loop = true;
+    // soundGhostSiren1.play();
+    playSiren();
   }
 
  ghosts.forEach(ghost => ghost.isScared = false);

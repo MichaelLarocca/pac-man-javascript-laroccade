@@ -15,7 +15,7 @@ A modern, vanilla JavaScript implementation of the classic Pac-Man arcade game, 
 - Extra lives every 10,000 points
 - Level progression with increasing difficulty
 - Pac-Man's remaining lives and current levels are displayed using icons, similar to the traditional arcade
-- Video game attract screen, displaying characters and bonus points amounts
+- Video game attract screen, displaying characters and bonus point amounts
 - Arcade cabinet styling with marquee, bezel, and joystick controller board
 - A Pac-Man themed toggle for full-screen and arcade cabinet-style viewing
 - Responsive design for desktop and mobile

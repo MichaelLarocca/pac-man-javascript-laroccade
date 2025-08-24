@@ -2,7 +2,7 @@
 
 A modern, vanilla JavaScript implementation of the classic Pac-Man arcade game, built with Vite.
 
-[**Play the live game here!**](https://pac-man-javascript-laroccade.netlify.app/)
+🔗 [**Play the live game here!**](https://pac-man-javascript-laroccade.netlify.app/) 🕹
 
 ![Pac-Man Logo](/public/images/LC-Pac-Man-screen-shot.png)
 
@@ -17,6 +17,7 @@ A modern, vanilla JavaScript implementation of the classic Pac-Man arcade game, 
 - Pac-Man's remaining lives and current levels are displayed using icons, similar to the traditional arcade
 - Video game attract screen, displaying characters and bonus points amounts
 - Arcade cabinet styling with marquee, bezel, and joystick controller board
+- A Pac-Man themed toggle for full-screen and arcade cabinet-style viewing
 - Responsive design for desktop and mobile
 - Arrow key controls, as well as mobile-friendly controls for touch devices
 - [Sprint board](https://github.com/users/MichaelLarocca/projects/1/views/1) and issue tracking with GitHub Projects

@@ -9,6 +9,7 @@ A modern, vanilla JavaScript implementation of the classic Pac-Man arcade game, 
 ## Features
 
 - Classic Pac-Man gameplay
+- CSS design, clip paths, and animation for arcade-style aesthetic
 - Dynamic audio effects, including pellet eating, ghost sirens, power-ups, and more
 - High score tracking with local storage
 - Fruit bonuses for extra points

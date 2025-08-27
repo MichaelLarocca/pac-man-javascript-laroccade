@@ -25,6 +25,42 @@ A modern, vanilla JavaScript implementation of the classic Pac-Man arcade game, 
 - Arrow key controls, as well as mobile-friendly controls for touch devices
 - [Sprint board](https://github.com/users/MichaelLarocca/projects/1/views/1) and issue tracking with GitHub Projects
 
+## Screenshots
+
+**Ghosts look in the direction they are heading, and the lair displays messages**  
+
+![Ghosts-Eyes-Lair](/public/images/Ghosts-Eyes-Lair.png)
+
+---
+
+**Ghosts retreat, change color, and flicker when about to change back when a power pellet is eaten**  
+
+![Scared-Ghosts](/public/images/Scared-Ghosts.png)
+
+---
+
+**Pac-Man eats fruits, displayed as emojis, for bonus points**
+![bonus-fruit](/public/images/bonus-fruit.png)
+
+---
+
+**Marquee, full-screen toggle, high score & score display**
+
+![Score-Display](/public/images/Score-Display.png)
+
+---
+
+**Joystick with light-up directional arrows, start button, and current lives and level display**
+
+![Joystick](/public/images/Joystick.png)
+
+---
+
+**Alternating attract screen, displaying characters and bonus score point amounts**
+![Title And Score Screen](/public/images/TitleAndScoreScreen.png)
+
+---
+
 ## Getting Started
 
 ### Prerequisites

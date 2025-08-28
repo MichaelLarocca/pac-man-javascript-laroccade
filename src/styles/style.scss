@@ -290,7 +290,12 @@ font-family: 'Monoton', cursive;
   border-radius: 50px;
   height: 125px;  
   
-  background-image: url("https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940");
+  // background-image: url("https://images.pexels.com/photos/998641/pexels-photo-998641.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940");
+  
+  /* Joystick background image:
+   Photo by Francesco Ungaro: https://www.pexels.com/photo/starry-sky-998641/
+  */
+  background-image: url('public/images/pexels-francesco-ungaro-998641.jpg');
   background-position: center; 
   background-repeat: no-repeat; 
   background-size: cover; 

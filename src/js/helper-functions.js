@@ -453,6 +453,23 @@ export function checkForGhostCatchesPacMan() {
     }
 }
 
+// Function to animate PacMan dying
+export function animatePacManDying() {
+    squares[pacmanCurrentIndex].classList.add('pacMan-move-die');
+    setTimeout(()=>{
+      squares[pacmanCurrentIndex].classList.remove('pacMan-move-die');
+      squares[pacmanCurrentIndex].classList.remove('pacMan');
+    }, 1250);
+
+    setTimeout(()=>{ 
+      squares[pacmanCurrentIndex].classList.add('pacMan-explode');
+    }, 1250);
+
+    setTimeout(()=>{ 
+      squares[pacmanCurrentIndex].classList.remove('pacMan-explode');
+    }, 1500);
+}
+
 export function loseLife(){
   stopAllSounds();
   soundDeath.play();
@@ -464,7 +481,8 @@ export function loseLife(){
   
   if(lives === 0) {
     clearInterval(speedStartPacMan);
-    squares[pacmanCurrentIndex].classList.add('pacMan-move-die');
+    animatePacManDying()
+
     resetGame();
     setTimeout(gameOver, 4000);
     // setTimeout(setTitleScreen, 8000);
@@ -473,7 +491,8 @@ export function loseLife(){
     
   } else {
     clearInterval(speedStartPacMan);
-    squares[pacmanCurrentIndex].classList.add('pacMan-move-die');
+    animatePacManDying()
+
     setTimeout(resetPacMan, 4000); 
   }
   // ghostsEaten = 0;

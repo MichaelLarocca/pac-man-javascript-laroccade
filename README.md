@@ -2,9 +2,13 @@
 
 A modern, vanilla JavaScript implementation of the classic Pac-Man arcade game, built with Vite.
 
-###### (Based on Ania Kubow's game tutorial, featured by freeCodeCamp & Scrimba)
-
 🔗 [**Play the live game here!**](https://pac-man-javascript-laroccade.netlify.app/) 🕹
+
+**Controls:**  
+* **Keyboard:** Use the arrow keys (↑, ↓, ←, →) to move Pac-Man.
+* **Touch:** On mobile or touch devices, tap the on-screen arrows to control Pac-Man’s direction.
+
+###### *(Based on Ania Kubow's game tutorial, featured by freeCodeCamp & Scrimba)*
 
 ![Pac-Man Logo](/public/images/LC-Pac-Man-screen-shot.png)
 
@@ -81,7 +85,14 @@ A modern, vanilla JavaScript implementation of the classic Pac-Man arcade game, 
 ```bash
 npm run build
 ```
+---
 
-## License
+## 💬 Join the Conversation!
+#### Have questions, feedback, or want to connect?  
+* [Start or join the discussion here!](https://github.com/MichaelLarocca/pac-man-javascript-laroccade/discussions/16) 👈
+* Everyone’s welcome—let’s talk Pac-Man, coding, and classic games! 🕹
 
+---
+
+### License
 [MIT](LICENSE)

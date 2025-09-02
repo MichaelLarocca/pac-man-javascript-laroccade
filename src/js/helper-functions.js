@@ -392,7 +392,8 @@ export function levelStart() {
     flagBonusLife = false;
   
     scoreDisplay.innerHTML = score;
-  
+
+    reSetLairTextColor("orange");
     squares[431].innerHTML = "R";
     squares[432].innerHTML = "E";
     squares[433].innerHTML = "A";
@@ -416,7 +417,8 @@ export function levelStart() {
     squares[433].innerHTML = "";
     squares[434].innerHTML = "";
     squares[435].innerHTML = "";
-    squares[436].innerHTML = "";  
+    squares[436].innerHTML = ""; 
+    reSetLairTextColor(); 
     
     // setPacManSpeed();
     speedStartPacMan = setInterval(control, pacManSpeed);  
@@ -539,6 +541,7 @@ function extraLife() {
    
       resizeCurrentPacManLives();
     
+      reSetLairTextColor("orange");
       squares[431].innerHTML = "E";
       squares[432].innerHTML = "X";
       squares[433].innerHTML = "T";
@@ -553,6 +556,7 @@ function extraLife() {
       squares[434].innerHTML = "";
       squares[435].innerHTML = "";
       squares[436].innerHTML = "";
+      reSetLairTextColor();
     }, 3000);
   }
   // if(score !== 0 && checkForBonusLife === 0 && flagBonusLife === false){

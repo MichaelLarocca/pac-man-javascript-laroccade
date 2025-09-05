@@ -33,7 +33,12 @@
 }
 .pacMan-move-die {
    // animation: pacManMoveDie 3s 1;
-   animation: pacManMoveDie 3s forwards;
+   animation: pacManMoveDie 1.5s forwards;
+}
+
+.pacMan-explode {
+  border: 1px dotted orange;
+  border-radius: 50%;
 }
 
 @keyframes pacManMoveLeft {

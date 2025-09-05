@@ -166,8 +166,15 @@ export function roundOutTheGameboard(){
       squares[630].classList.add('roundBottomRight');
 }
 
+export function reSetLairTextColor(color = "black") {
+  document.querySelectorAll('.lairText').forEach(el => {
+    el.style.color = color;
+  });
+}
+
 export function setLairText() {
      // 
+    reSetLairTextColor();
     squares[403].classList.add('lairText');
     squares[404].classList.add('lairText');
     squares[405].classList.add('lairText');
@@ -183,6 +190,7 @@ export function setLairText() {
     squares[436].classList.add('lairText');
 
     //lairText
+    reSetLairTextColor("orange");
     squares[431].innerHTML = "R";
     squares[432].innerHTML = "E";
     squares[433].innerHTML = "A";
@@ -195,6 +203,7 @@ export function setLairText() {
 }
 
 export function setTitleScreen() {
+ reSetLairTextColor();
  for(let i = 0; i < squares.length; i++) {
    
      squares[i].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down','blank', 'wall', 'powerPellet', 'pellet', 'ghost', 'ghost-small','ghost-large', 'ghost-look-left', 'ghost-look-up', 'ghost-look-down', 'ghost-look-right',
@@ -323,6 +332,7 @@ export function setTitleScreen() {
 } // setTitleScreen
 
 export function setScoreScreen() {
+ reSetLairTextColor();   
  for(let i = 0; i < squares.length; i++) {
    
    squares[i].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down','blank', 'wall', 'powerPellet', 'pellet', 'ghost', 'ghost-small','ghost-large', 'ghost-look-left', 'ghost-look-up', 'ghost-look-down', 'ghost-look-right',
@@ -459,6 +469,7 @@ export function setScoreScreen() {
 } // setScoreScreen
 
 export function setGameBoard() { 
+    reSetLairTextColor();
     for(let i = 0; i < squares.length; i++) {
     squares[i].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down', 
                                 'blank', 'wall', 'powerPellet', 'pellet', 'ghost', 'ghost-look-left', 'ghost-look-up', 'ghost-look-down', 'ghost-look-right',

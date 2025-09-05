@@ -1,4 +1,4 @@
-import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen } from './game-board.js';
+import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen, reSetLairTextColor } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
 import { playSiren, stopSiren, switchToSiren2, stopPacManEatingPelletsSound, playPacManEatingPelletsSound, playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
 
@@ -344,10 +344,11 @@ export function control(x) {
   } // control
 
 function fruitScoreBonus(){
+  reSetLairTextColor("whitesmoke");
   soundPacManEatingFruit.play();
   if(level < 12) {
     score += fruitBonusValue[level-1];
-    squares[433].style.color = 'whitesmoke';
+    // squares[433].style.color = 'whitesmoke';
     squares[433].innerHTML = fruitBonusValue[level-1];
       // console.log(`Fruit Eaten! ${fruitBonusValue[level-1]}`);
     fruitEaten = true;
@@ -355,13 +356,14 @@ function fruitScoreBonus(){
     squares[489].innerHTML = '';  
   } else {
     score += fruitBonusValue[fruitBonusValue.length-1];
-    squares[433].style.color = 'whitesmoke';
+    // squares[433].style.color = 'whitesmoke';
     squares[433].innerHTML = fruitBonusValue[fruitBonus.length-1];
       // console.log(`Fruit Eaten! ${fruitBonusValue[level-1]}`);
     fruitEaten = true;
     squares[pacmanCurrentIndex].classList.remove('bonusFruit');
     squares[489].innerHTML = '';      
   }
+  // reSetLairTextColor(); 
 }
 
 // Fruit Score
@@ -390,7 +392,8 @@ export function levelStart() {
     flagBonusLife = false;
   
     scoreDisplay.innerHTML = score;
-  
+
+    reSetLairTextColor("orange");
     squares[431].innerHTML = "R";
     squares[432].innerHTML = "E";
     squares[433].innerHTML = "A";
@@ -414,7 +417,8 @@ export function levelStart() {
     squares[433].innerHTML = "";
     squares[434].innerHTML = "";
     squares[435].innerHTML = "";
-    squares[436].innerHTML = "";  
+    squares[436].innerHTML = ""; 
+    reSetLairTextColor(); 
     
     // setPacManSpeed();
     speedStartPacMan = setInterval(control, pacManSpeed);  
@@ -453,6 +457,23 @@ export function checkForGhostCatchesPacMan() {
     }
 }
 
+// Function to animate PacMan dying
+export function animatePacManDying() {
+    squares[pacmanCurrentIndex].classList.add('pacMan-move-die');
+    setTimeout(()=>{
+      squares[pacmanCurrentIndex].classList.remove('pacMan-move-die');
+      squares[pacmanCurrentIndex].classList.remove('pacMan');
+    }, 1250);
+
+    setTimeout(()=>{ 
+      squares[pacmanCurrentIndex].classList.add('pacMan-explode');
+    }, 1250);
+
+    setTimeout(()=>{ 
+      squares[pacmanCurrentIndex].classList.remove('pacMan-explode');
+    }, 1500);
+}
+
 export function loseLife(){
   stopAllSounds();
   soundDeath.play();
@@ -464,7 +485,8 @@ export function loseLife(){
   
   if(lives === 0) {
     clearInterval(speedStartPacMan);
-    squares[pacmanCurrentIndex].classList.add('pacMan-move-die');
+    animatePacManDying()
+
     resetGame();
     setTimeout(gameOver, 4000);
     // setTimeout(setTitleScreen, 8000);
@@ -473,7 +495,8 @@ export function loseLife(){
     
   } else {
     clearInterval(speedStartPacMan);
-    squares[pacmanCurrentIndex].classList.add('pacMan-move-die');
+    animatePacManDying()
+
     setTimeout(resetPacMan, 4000); 
   }
   // ghostsEaten = 0;
@@ -518,6 +541,7 @@ function extraLife() {
    
       resizeCurrentPacManLives();
     
+      reSetLairTextColor("orange");
       squares[431].innerHTML = "E";
       squares[432].innerHTML = "X";
       squares[433].innerHTML = "T";
@@ -532,6 +556,7 @@ function extraLife() {
       squares[434].innerHTML = "";
       squares[435].innerHTML = "";
       squares[436].innerHTML = "";
+      reSetLairTextColor();
     }, 3000);
   }
   // if(score !== 0 && checkForBonusLife === 0 && flagBonusLife === false){
@@ -565,19 +590,20 @@ function resetGame(){
 }
 
 function gameOver() {
+    reSetLairTextColor("red"); 
     checkForHighScore();
     // localStorage.setItem("highScore", JSON.stringify(highScore));
     removePacMan();
   
-    squares[404].style.color = 'red';
-    squares[405].style.color = 'red';
-    squares[406].style.color = 'red';
-    squares[407].style.color = 'red';
+    // squares[404].style.color = 'red';
+    // squares[405].style.color = 'red';
+    // squares[406].style.color = 'red';
+    // squares[407].style.color = 'red';
 
-    squares[432].style.color = 'red';
-    squares[433].style.color = 'red';
-    squares[434].style.color = 'red';
-    squares[435].style.color = 'red';  
+    // squares[432].style.color = 'red';
+    // squares[433].style.color = 'red';
+    // squares[434].style.color = 'red';
+    // squares[435].style.color = 'red';  
   
     squares[403].innerHTML = "";
     squares[404].innerHTML = "G";
@@ -594,16 +620,16 @@ function gameOver() {
     squares[436].innerHTML = "";    
   
     setTimeout(function(){
-      
-    squares[404].style.color = 'orange';
-    squares[405].style.color = 'orange';
-    squares[406].style.color = 'orange';
-    squares[407].style.color = 'orange';
+    reSetLairTextColor("orange");   
+    // squares[404].style.color = 'orange';
+    // squares[405].style.color = 'orange';
+    // squares[406].style.color = 'orange';
+    // squares[407].style.color = 'orange';
 
-    squares[432].style.color = 'orange';
-    squares[433].style.color = 'orange';
-    squares[434].style.color = 'orange';
-    squares[435].style.color = 'orange';        
+    // squares[432].style.color = 'orange';
+    // squares[433].style.color = 'orange';
+    // squares[434].style.color = 'orange';
+    // squares[435].style.color = 'orange';        
       
     squares[403].innerHTML = "";
     squares[404].innerHTML = "";
@@ -684,8 +710,9 @@ export function gameStart() {
 }
 
 function clearFruitBonus1(){
+  reSetLairTextColor("orange");
   squares[433].innerHTML = '';
-  squares[433].style.color = 'orange';
+  // squares[433].style.color = 'orange';
   squares[489].classList.remove('bonusFruit');
     console.log('clearFruitBonus1');
   squares[489].innerHTML = '';
@@ -693,8 +720,9 @@ function clearFruitBonus1(){
 }
 
 function clearFruitBonus2(){
+  reSetLairTextColor("orange");
   squares[433].innerHTML = '';
-  squares[433].style.color = 'orange';
+  // squares[433].style.color = 'orange';
   squares[489].classList.remove('bonusFruit');
     console.log('clearFruitBonus2');
   squares[489].innerHTML = '';
@@ -977,13 +1005,14 @@ export function moveGhost(ghost) {
      } // if(ghost.isScared)
     
     if(ghost.isScared && squares[ghost.currentIndex].classList.contains('pacMan')) {
-      
+      reSetLairTextColor("whitesmoke");
       playGhostEatenSounds();
 
       ghostsEaten += 1;
       score += ghostsEaten * 400;
         console.log(`ghostsEaten score: ${ghostsEaten * 400}`);
-      squares[433].style.color = 'whitesmoke';
+      // squares[433].style.color = 'whitesmoke';
+
       squares[433].innerHTML = ghostsEaten * 400;
       setTimeout(()=>{squares[433].innerHTML = ''; }, 5000);      
       // Set blinky to respawn inside the lair
@@ -995,6 +1024,7 @@ export function moveGhost(ghost) {
           ghost.currentIndex = ghost.startIndex;  
       }  
       squares[ghost.currentIndex].classList.add(ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes);  
+      // reSetLairTextColor();     
     }
     checkForGhostCatchesPacMan();
     // checkForHighScore();

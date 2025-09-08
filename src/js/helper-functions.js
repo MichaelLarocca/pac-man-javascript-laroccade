@@ -478,6 +478,8 @@ export function loseLife(){
   stopAllSounds();
   soundDeath.play();
   lives -= 1;
+  clearInterval(launchFruitBonus1);
+  clearInterval(launchFruitBonus2);
   squares[489].classList.remove('bonusFruit');
   squares[489].innerHTML = '';
   
@@ -713,7 +715,11 @@ export function gameStart() {
 
 function clearFruitBonus1(){
   reSetLairTextColor("orange");
-  squares[433].innerHTML = '';
+  // squares[433].innerHTML = '';
+  if (!isNaN(Number(squares[433].innerHTML))) {
+    squares[433].innerHTML = '';
+  }
+
   // squares[433].style.color = 'orange';
   squares[489].classList.remove('bonusFruit');
     console.log('clearFruitBonus1');
@@ -723,7 +729,11 @@ function clearFruitBonus1(){
 
 function clearFruitBonus2(){
   reSetLairTextColor("orange");
-  squares[433].innerHTML = '';
+  // squares[433].innerHTML = '';
+  if (!isNaN(Number(squares[433].innerHTML))) {
+    squares[433].innerHTML = '';
+  }
+
   // squares[433].style.color = 'orange';
   squares[489].classList.remove('bonusFruit');
     console.log('clearFruitBonus2');

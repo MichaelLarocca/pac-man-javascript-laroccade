@@ -478,6 +478,8 @@ export function loseLife(){
   stopAllSounds();
   soundDeath.play();
   lives -= 1;
+  squares[489].classList.remove('bonusFruit');
+  squares[489].innerHTML = '';
   
   if(lives>0){
     document.querySelector('.pac-man-lives').remove();

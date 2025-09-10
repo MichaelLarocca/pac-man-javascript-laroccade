@@ -918,130 +918,136 @@ export function resetGhostsSpeed(ghost) {
   ghosts[2].speed = 250; // pinky
   ghosts[3].speed = 300; // clyde  
 }
-  
+
 export function moveGhost(ghost) {
-  // Testing
-  // if(!ghost.isScared && squares[ghost.currentIndex].classList.contains('scaredBlink')) {
-  //    squares[ghost.currentIndex].classList.remove('scaredBlink');
-  //   // setTimeout(()=>{ squares[ghost.currentIndex].classList.add('scaredBlink'); }, 5000);
-  // }
-
-  // soundGhostSiren1.loop = true;
-  // soundGhostSiren1.play();
   playSiren();
-  
-  const directions = [-1,1,28, -28];
+
+  const directions = [-1, 1, 28, -28];
   let direction = directions[Math.floor(Math.random() * directions.length)];
-  
+
   ghost.timerId = setInterval(function() {
-    if (
-    !squares[ghost.currentIndex + direction].classList.contains('ghost') &&
-    !squares[ghost.currentIndex + direction].classList.contains('lairText') &&
-    !squares[ghost.currentIndex + direction].classList.contains('wall') 
-    ) {
-      // Eye direction
-        if(direction === -1) {
-          squares[ghost.currentIndex].classList.remove(ghost.eyes);
-          ghost.eyes = `ghost-look-left-${eyeSize}`;
-        } else if (direction === 1) {
-          squares[ghost.currentIndex].classList.remove(ghost.eyes);
-          ghost.eyes = `ghost-look-right-${eyeSize}`;
-        } else if (direction === 28) {
-          squares[ghost.currentIndex].classList.remove(ghost.eyes);
-          ghost.eyes = `ghost-look-down-${eyeSize}`;
-        } else if (direction === -28) {
-          squares[ghost.currentIndex].classList.remove(ghost.eyes);
-          ghost.eyes = `ghost-look-up-${eyeSize}`;
-        }
-      
-      // Ghost hover over pellets and powerPellets    
-      if(squares[ghost.currentIndex + direction].classList.contains('pellet')) {
-          // console.log('pellet');
-          squares[ghost.currentIndex + direction].classList.remove('pellet');
-        squares[ghost.currentIndex].classList.remove(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes, 'scared', 'scaredBlink', 'ghost-large','ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large');
-        ghost.currentIndex += direction;
+    let foundValid = false;
+    let attempts = 0;
 
-          squares[ghost.currentIndex - direction].classList.add('pellet');
-        squares[ghost.currentIndex].classList.add(ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes);      
-      } else if(squares[ghost.currentIndex + direction].classList.contains('powerPellet')) {
-        console.log('powerPellet');
-         squares[ghost.currentIndex + direction].classList.remove('powerPellet');
-         squares[ghost.currentIndex].classList.remove(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes, 'scared', 'scaredBlink', 'ghost-large','ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large');
-         ghost.currentIndex += direction;
+    while (!foundValid && attempts < directions.length) {
+      const nextIndex = ghost.currentIndex + direction;
 
-          squares[ghost.currentIndex - direction].classList.add('powerPellet');
-         squares[ghost.currentIndex].classList.add(ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes); 
+      if (
+        !squares[nextIndex].classList.contains('ghost') &&
+        !squares[nextIndex].classList.contains('lairText') &&
+        !squares[nextIndex].classList.contains('wall') &&
+        // Only block moving DOWN into a lairWall
+        !(direction === 28 && squares[nextIndex].classList.contains('lairWall')) &&
+        (nextIndex !== 375) &&
+        (nextIndex !== 380)
+      ) {
+        foundValid = true;
       } else {
-        squares[ghost.currentIndex].classList.remove(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes, 'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large');
-        ghost.currentIndex += direction;
-
-        squares[ghost.currentIndex].classList.add(ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes);           
+        direction = directions[Math.floor(Math.random() * directions.length)];
+        attempts++;
       }
-      // Choose new direction
-    } else {
-      direction = directions[Math.floor(Math.random() * directions.length)];
-    }      
-     
-     if(ghost.isScared) {
+    }
+
+    if (foundValid) {
+      // Eye direction
+      if (direction === -1) {
+        squares[ghost.currentIndex].classList.remove(ghost.eyes);
+        ghost.eyes = `ghost-look-left-${eyeSize}`;
+      } else if (direction === 1) {
+        squares[ghost.currentIndex].classList.remove(ghost.eyes);
+        ghost.eyes = `ghost-look-right-${eyeSize}`;
+      } else if (direction === 28) {
+        squares[ghost.currentIndex].classList.remove(ghost.eyes);
+        ghost.eyes = `ghost-look-down-${eyeSize}`;
+      } else if (direction === -28) {
+        squares[ghost.currentIndex].classList.remove(ghost.eyes);
+        ghost.eyes = `ghost-look-up-${eyeSize}`;
+      }
+
+      // Ghost hover over pellets and powerPellets    
+      if (squares[ghost.currentIndex + direction].classList.contains('pellet')) {
+        squares[ghost.currentIndex + direction].classList.remove('pellet');
+        squares[ghost.currentIndex].classList.remove(
+          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
+          'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
+          'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
+        );
+        ghost.currentIndex += direction;
+        squares[ghost.currentIndex - direction].classList.add('pellet');
+        squares[ghost.currentIndex].classList.add(
+          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
+        );
+      } else if (squares[ghost.currentIndex + direction].classList.contains('powerPellet')) {
+        squares[ghost.currentIndex + direction].classList.remove('powerPellet');
+        squares[ghost.currentIndex].classList.remove(
+          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
+          'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
+          'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
+        );
+        ghost.currentIndex += direction;
+        squares[ghost.currentIndex - direction].classList.add('powerPellet');
+        squares[ghost.currentIndex].classList.add(
+          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
+        );
+      } else {
+        squares[ghost.currentIndex].classList.remove(
+          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
+          'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
+          'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
+        );
+        ghost.currentIndex += direction;
+        squares[ghost.currentIndex].classList.add(
+          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
+        );
+      }
+    }
+    // If no valid move, ghost stays in place this tick
+
+    if (ghost.isScared) {
       soundGhostSiren1.pause();
       soundGhostSiren1.currentTime = 0;
 
-       // Change ghost direction when scared
-       if(direction === 1 ) { direction = -1 };
-       if(direction === -1 ) { direction = 1 }; 
-       if(direction === 28 ) { direction = -28 };  
-       if(direction === -28 ) { direction = 28 };  
-      
-        squares[ghost.currentIndex].classList.add('scared');
-       
-        setTimeout(()=>{ squares[ghost.currentIndex].classList.add('scaredBlink'); }, 8000);
-        // setTimeout(()=>{ squares[ghost.currentIndex].classList.add('scaredBlink'); }, 5000);
-        // setTimeout(()=>{ squares[ghost.currentIndex].classList.remove('scaredBlink'); }, 5001);
-      
-      /// Testing
-      // ghosts.forEach(ghost => clearInterval(ghost.timerId));
-      // ghosts.forEach(ghost => ghost.speed = 400);
-        // ghosts[0].speed = 300; // blinky 
-        // ghosts[1].speed = 300; // inky
-        // ghosts[2].speed = 300; // pinky
-        // ghosts[3].speed = 300; // clyde  
-           // console.log(`ghosts[0].speed: ${ghosts[0].speed}`);
-           // console.log(`ghosts[1].speed: ${ghosts[1].speed}`);
-           // console.log(`ghosts[2].speed: ${ghosts[2].speed}`);
-           // console.log(`ghosts[3].speed: ${ghosts[3].speed}`);
+      // Change ghost direction when scared
+      if (direction === 1) { direction = -1; }
+      if (direction === -1) { direction = 1; }
+      if (direction === 28) { direction = -28; }
+      if (direction === -28) { direction = 28; }
 
-        // removeGhosts();
-        // startGhosts();
-        // moveGhost(ghost);
-       
-     } // if(ghost.isScared)
-    
-    if(ghost.isScared && squares[ghost.currentIndex].classList.contains('pacMan')) {
+      squares[ghost.currentIndex].classList.add('scared');
+      setTimeout(() => { squares[ghost.currentIndex].classList.add('scaredBlink'); }, 8000);
+    }
+
+    if (ghost.isScared && squares[ghost.currentIndex].classList.contains('pacMan')) {
       reSetLairTextColor("whitesmoke");
       playGhostEatenSounds();
 
       ghostsEaten += 1;
       score += ghostsEaten * 400;
-        console.log(`ghostsEaten score: ${ghostsEaten * 400}`);
-      // squares[433].style.color = 'whitesmoke';
-
       squares[433].innerHTML = ghostsEaten * 400;
-      setTimeout(()=>{squares[433].innerHTML = ''; }, 5000);      
+      setTimeout(() => { squares[433].innerHTML = ''; }, 5000);
+
       // Set blinky to respawn inside the lair
-      if(squares[ghost.currentIndex].classList.contains('blinky')) {
-          squares[ghost.currentIndex].classList.remove(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes, 'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large');
-          ghost.currentIndex = 380;
+      if (squares[ghost.currentIndex].classList.contains('blinky')) {
+        squares[ghost.currentIndex].classList.remove(
+          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
+          'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
+          'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
+        );
+        ghost.currentIndex = 380;
       } else {
-          squares[ghost.currentIndex].classList.remove(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes, 'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large');
-          ghost.currentIndex = ghost.startIndex;  
-      }  
-      squares[ghost.currentIndex].classList.add(ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes);  
-      // reSetLairTextColor();     
+        squares[ghost.currentIndex].classList.remove(
+          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
+          'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
+          'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
+        );
+        ghost.currentIndex = ghost.startIndex;
+      }
+      squares[ghost.currentIndex].classList.add(
+        ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
+      );
     }
     checkForGhostCatchesPacMan();
-    // checkForHighScore();
-      console.log(`ghosts[0].speed: ${ghosts[0].speed}`);
- }, ghost.speed); 
+  }, ghost.speed);
 }
 
 export function unScareGhosts() {

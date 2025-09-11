@@ -37,6 +37,10 @@
   border-color: var(--color-wall) !important;
 }
 
+.tunnel {
+  background-color: lightgreen;
+}
+
 .level-completed {
   animation: levelCompleted .5s 4 forwards;
 }

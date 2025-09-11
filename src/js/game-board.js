@@ -172,6 +172,23 @@ export function reSetLairTextColor(color = "black") {
   });
 }
 
+export function setTunnel() {
+    squares[392].classList.add('tunnel');
+    squares[393].classList.add('tunnel');
+    squares[394].classList.add('tunnel');
+    squares[395].classList.add('tunnel');
+    squares[396].classList.add('tunnel');
+    squares[397].classList.add('tunnel');
+    squares[398].classList.add('tunnel');
+
+    squares[414].classList.add('tunnel');
+    squares[415].classList.add('tunnel');
+    squares[416].classList.add('tunnel');
+    squares[417].classList.add('tunnel');
+    squares[418].classList.add('tunnel');
+    squares[419].classList.add('tunnel');
+}
+
 export function setLairText() {
      // 
     reSetLairTextColor();
@@ -208,7 +225,7 @@ export function setTitleScreen() {
    
      squares[i].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down','blank', 'wall', 'powerPellet', 'pellet', 'ghost', 'ghost-small','ghost-large', 'ghost-look-left', 'ghost-look-up', 'ghost-look-down', 'ghost-look-right',
                                 'blinky', 'pinky', 'inky', 'clyde', 'lairWall', 'bonusFruit', 'roundBottomLeft', 'roundBottomRight',
-                               'roundTopLeft', 'roundTopRight', 'level-completed');  
+                               'roundTopLeft', 'roundTopRight', 'level-completed.', 'tunnel');  
    
     squares[i].style.color = 'whitesmoke';
    
@@ -337,7 +354,7 @@ export function setScoreScreen() {
    
    squares[i].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down','blank', 'wall', 'powerPellet', 'pellet', 'ghost', 'ghost-small','ghost-large', 'ghost-look-left', 'ghost-look-up', 'ghost-look-down', 'ghost-look-right',
                                'blinky', 'pinky', 'inky', 'clyde', 'lairWall', 'bonusFruit', 'roundBottomLeft', 'roundBottomRight',
-                               'roundTopLeft', 'roundTopRight', 'level-completed');  
+                               'roundTopLeft', 'roundTopRight', 'level-completed', 'tunnel');  
 
    squares[i].style.color = 'whitesmoke';
    
@@ -477,7 +494,7 @@ export function setGameBoard() {
                                'roundTopLeft', 'roundTopRight', 'level-completed', 
                                 'ghost-look-up-small', 'ghost-look-down-small', 'ghost-look-left-small', 'ghost-look-right-small', 
                                 'ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large', 
-                                'ghost-small', 'ghost-large', 'ghost-red', 'ghost-pink', 'ghost-blue', 'ghost-orange');
+                                'ghost-small', 'ghost-large', 'ghost-red', 'ghost-pink', 'ghost-blue', 'ghost-orange', 'tunnel');
           // squares[i].classList.add('game-board-square');      
     squares[i].innerHTML = '';
     squares[i].style.color = 'orange';

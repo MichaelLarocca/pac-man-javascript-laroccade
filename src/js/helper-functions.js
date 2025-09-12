@@ -249,6 +249,12 @@ export let pacmanCurrentIndex = 658;
 // squares[658].classList.add('pacMan-move-left');
 
 export function control(x) {
+    // Determine how many steps to move
+    const inTunnel = squares[pacmanCurrentIndex].classList.contains('tunnel');
+    const steps = inTunnel ? 2 : 1; // Move 2 steps in tunnel, 1 elsewhere
+
+   for (let i = 0; i < steps; i++) { 
+
     squares[pacmanCurrentIndex].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down');
     switch(pacmanCurrentDirection) {
         case 'down':
@@ -341,6 +347,8 @@ export function control(x) {
     highScoreDisplaySpan.innerText = highScore;
 
     // stopPacManEatingPelletsSound();
+    
+   } // end for steps 
   } // control
 
 function fruitScoreBonus(){

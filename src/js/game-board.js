@@ -178,10 +178,7 @@ export function setTunnel() {
     squares[394].classList.add('tunnel');
     squares[395].classList.add('tunnel');
     squares[396].classList.add('tunnel');
-    squares[397].classList.add('tunnel');
-    squares[398].classList.add('tunnel');
 
-    squares[414].classList.add('tunnel');
     squares[415].classList.add('tunnel');
     squares[416].classList.add('tunnel');
     squares[417].classList.add('tunnel');

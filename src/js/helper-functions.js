@@ -1,4 +1,4 @@
-import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen, reSetLairTextColor } from './game-board.js';
+import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen, reSetLairTextColor, setTunnel } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
 import { playSiren, stopSiren, switchToSiren2, stopPacManEatingPelletsSound, playPacManEatingPelletsSound, playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
 
@@ -249,6 +249,12 @@ export let pacmanCurrentIndex = 658;
 // squares[658].classList.add('pacMan-move-left');
 
 export function control(x) {
+    // Determine how many steps to move
+    const inTunnel = squares[pacmanCurrentIndex].classList.contains('tunnel');
+    const steps = inTunnel ? 2 : 1; // Move 2 steps in tunnel, 1 elsewhere
+
+   for (let i = 0; i < steps; i++) { 
+
     squares[pacmanCurrentIndex].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down');
     switch(pacmanCurrentDirection) {
         case 'down':
@@ -341,6 +347,8 @@ export function control(x) {
     highScoreDisplaySpan.innerText = highScore;
 
     // stopPacManEatingPelletsSound();
+    
+   } // end for steps 
   } // control
 
 function fruitScoreBonus(){
@@ -700,6 +708,7 @@ export function gameStart() {
   
   setGameBoard();
   roundOutTheGameboard();
+  setTunnel();
 
   clearInterval(speedStartPacMan);
 

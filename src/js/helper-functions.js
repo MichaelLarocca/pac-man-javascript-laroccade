@@ -881,6 +881,7 @@ export class Ghost {
     this.currentIndex = startIndex;
     this.isScard = false;
     this.timerId = NaN;
+    this.slowTick = 0;
   }
 }
 
@@ -912,7 +913,7 @@ export function resetGhosts(ghost) {
   ghosts.forEach(ghost => clearInterval(ghost.timerId));
   removeGhosts();
   
-  ghosts[0].currentIndex = 321; // blinky 
+  ghosts[0].currentIndex = 321;  // blinky 
   ghosts[1].currentIndex = 376; // inky
   ghosts[2].currentIndex = 377; // pinky
   ghosts[3].currentIndex = 378; // clyde
@@ -937,6 +938,18 @@ export function moveGhost(ghost) {
   ghost.timerId = setInterval(function() {
     let foundValid = false;
     let attempts = 0;
+
+    let shouldSlow = ghost.isScared || squares[ghost.currentIndex].classList.contains('tunnel');
+    if (shouldSlow) {
+      ghost.slowTick = (ghost.slowTick || 0) + 1;
+      if (ghost.slowTick < 2) {
+        // Hold position, don't move yet
+        return;
+      }
+      ghost.slowTick = 0; // Reset after moving
+    } else {
+      ghost.slowTick = 0; // Reset if not slowed
+    }
 
     while (!foundValid && attempts < directions.length) {
       const nextIndex = ghost.currentIndex + direction;
@@ -981,6 +994,13 @@ export function moveGhost(ghost) {
           'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
           'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
         );
+        // Tunnel wrap for ghosts
+        if (direction === 1 && ghost.currentIndex === 418) { // Moving right, about to exit right tunnel
+          ghost.currentIndex = 391; // Will become 392 after +1
+        }
+        if (direction === -1 && ghost.currentIndex === 393) { // Moving left, about to exit left tunnel
+          ghost.currentIndex = 420; // Will become 419 after -1
+        }
         ghost.currentIndex += direction;
         squares[ghost.currentIndex - direction].classList.add('pellet');
         squares[ghost.currentIndex].classList.add(
@@ -993,6 +1013,13 @@ export function moveGhost(ghost) {
           'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
           'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
         );
+        // Tunnel wrap for ghosts
+        if (direction === 1 && ghost.currentIndex === 418) { // Moving right, about to exit right tunnel
+          ghost.currentIndex = 391; // Will become 392 after +1
+        }
+        if (direction === -1 && ghost.currentIndex === 393) { // Moving left, about to exit left tunnel
+          ghost.currentIndex = 420; // Will become 419 after -1
+        }        
         ghost.currentIndex += direction;
         squares[ghost.currentIndex - direction].classList.add('powerPellet');
         squares[ghost.currentIndex].classList.add(
@@ -1004,6 +1031,13 @@ export function moveGhost(ghost) {
           'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
           'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
         );
+        // Tunnel wrap for ghosts
+        if (direction === 1 && ghost.currentIndex === 418) { // Moving right, about to exit right tunnel
+          ghost.currentIndex = 391; // Will become 392 after +1
+        }
+        if (direction === -1 && ghost.currentIndex === 393) { // Moving left, about to exit left tunnel
+          ghost.currentIndex = 420; // Will become 419 after -1
+        }        
         ghost.currentIndex += direction;
         squares[ghost.currentIndex].classList.add(
           ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes

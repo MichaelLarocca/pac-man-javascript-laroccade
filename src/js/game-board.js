@@ -1,6 +1,7 @@
 import { levelComplete, counterPelet, fruitBonus, fruitBonusValue, resetGhosts, removeGhosts, startGhosts, eyeSize, ghostSize, Ghost, ghosts, checkForHighScore } from './helper-functions.js';
 export const squares = [];
 export const gameGrid = document.getElementById("game-grid");
+export const pelletState = [];
 
   const overlayArray = [
       1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -503,13 +504,6 @@ export function setGameBoard() {
               squares[i].classList.add('wall');
               // squares[i].classList.add('level-completed');
           }
-          if(overlayArray[i] === 2) {
-              squares[i].classList.add('powerPellet');
-          }
-          if(overlayArray[i] === 3) {
-              squares[i].classList.add('pellet');
-          }
-
           if(overlayArray[i] === 8) {
               squares[i].classList.add('pacMan');
               squares[i].classList.add('pacMan-move-left');
@@ -517,9 +511,21 @@ export function setGameBoard() {
           if(overlayArray[i] === 9) {
               squares[i].classList.add('lairWall');
           } 
+
+          // Pellet state logic (only one of these will be true per square)
           if(overlayArray[i] === 10) {
               squares[i].classList.add('bonusFruit');
-          }                                                  
+          } 
+          
+          if(overlayArray[i] === 2) {
+              squares[i].classList.add('powerPellet');
+              pelletState[i] = 'powerPellet'; // Track state
+          } else if(overlayArray[i] === 3) {
+              squares[i].classList.add('pellet');
+              pelletState[i] = 'pellet'; // Track state
+          } else {
+              pelletState[i] = null; // Track state
+          }
 
   } // add ghosts
   // startGhosts();

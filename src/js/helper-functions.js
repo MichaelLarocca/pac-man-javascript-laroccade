@@ -1,4 +1,4 @@
-import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen, reSetLairTextColor, setTunnel } from './game-board.js';
+import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen, reSetLairTextColor, setTunnel, pelletState } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
 import { playSiren, stopSiren, switchToSiren2, stopPacManEatingPelletsSound, playPacManEatingPelletsSound, playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
 
@@ -15,14 +15,9 @@ if(JSON.parse(localStorage.getItem("highScore")) !== null) {
 
 export function checkForHighScore() {
       if(score >= highScore) {
-        // if(score !== 0) {
-        //   soundHighScore.play();
-        // }
-
         highScore = score;
         localStorage.setItem("highScore", JSON.stringify(highScore));
         highScore = JSON.parse(localStorage.getItem("highScore"));
-        // highScoreDisplaySpan.innerText = `${highScore}`; Caused error
       }
 }
 checkForHighScore();
@@ -306,20 +301,19 @@ export function control(x) {
         break;
     }
     // Collision and Points
-    if(squares[pacmanCurrentIndex].classList.contains('pellet')) {
-      
-      playPacManEatingPelletsSound();
+      if (squares[pacmanCurrentIndex].classList.contains('pellet')) {
+        playPacManEatingPelletsSound();
+        squares[pacmanCurrentIndex].classList.remove('pellet');
+        pelletState[pacmanCurrentIndex] = null; // <-- Add this line
+        counterPelet += 1;
+        score += 10;
+      } else {
+        stopPacManEatingPelletsSound();
+      }
 
-      squares[pacmanCurrentIndex].classList.remove('pellet');
-      counterPelet += 1;
-        // console.log(`counterPelet: ${counterPelet}`);
-      score += 10;
-        // console.log(`score: ${score}`);
-    } else {
-      stopPacManEatingPelletsSound(); // Stop the sound when Pac-Man moves without eating a pellet
-    }
     if(squares[pacmanCurrentIndex].classList.contains('powerPellet')){
       squares[pacmanCurrentIndex].classList.remove('powerPellet');
+      pelletState[pacmanCurrentIndex] = null;
       score += 50; 
       stopSiren();
       soundPowerUp.play();
@@ -334,12 +328,7 @@ export function control(x) {
       }
     }
   
-    // if(score >= highScore) {
-    //   highScore = score;
-    // }
     checkForHighScore();
-    // squares[392].classList.add('powerPellet');
-    // squares[419].classList.add('powerPellet');
   
     squares[pacmanCurrentIndex].classList.add('pacMan');
     scoreDisplay.innerText = score;
@@ -413,13 +402,7 @@ export function levelStart() {
   resetGhosts();  
   
   setTimeout(function(){ 
-    // alert("Hello"); 
-    
-    // Code for Level Complete
-    // for(let i = 0; i < squares.length; i++) {
-    //   squares[i].classList.add('level-completed');
-    // }
-    
+
     squares[431].innerHTML = "";
     squares[432].innerHTML = "";
     squares[433].innerHTML = "";
@@ -543,9 +526,6 @@ function extraLife() {
       lives += 1;
       flagBonusLife = true;
       soundHighScore.play();
-        // console.log(`extraLife: ${lives}`);
-        // console.log(`flagBonusLife: ${flagBonusLife}`)
-        // console.log(`Lives: ${lives}`);
      
       const pacManLife = document.createElement('div');
       pacManLife.classList.add('pac-man-lives');
@@ -571,16 +551,6 @@ function extraLife() {
       reSetLairTextColor();
     }, 3000);
   }
-  // if(score !== 0 && checkForBonusLife === 0 && flagBonusLife === false){
-  //     lives += 1;
-  //     flagBonusLife = true;
-  //       console.log(`extraLife: ${lives}`);
-  //       console.log(`flagBonusLife: ${flagBonusLife}`)
-  //       console.log(`Lives: ${lives}`);
-  //     const pacManLife = document.createElement('div');
-  //     pacManLife.classList.add('pac-man-lives');
-  //     ctnPacManLives.appendChild(pacManLife);    
-  // }
 }
 setInterval(extraLife, 500);
 // End Testing
@@ -665,29 +635,20 @@ function resetPacMan(){
   squares[pacmanCurrentIndex].classList.remove('pacMan-move-die');
   pacmanCurrentIndex = 658;
   squares[pacmanCurrentIndex].classList.add('pacMan');  
-   // setInterval(control, 200); 
-  // setInterval(speedStartPacMan);
   levelStart();
 }
 
 export function gameStart() {
-  // soundGhostSiren1.loop = false;
-  // soundGhostSiren1.pause();
-  // soundGhostSiren1.currentTime = 0;
+
   if(level === 0){
     soundGameStart.play();
       console.log(`soundGameStart.play(): level ${level}`);
   }
   
-  // clearInterval(toggleTittleAndScoreScreen);
-  // clearInterval(startToggleTittleAndScoreScreen);
   endToggleTitleAndScoreScreen();
   
   checkForHighScore();
-  // highScore = JSON.parse(localStorage.getItem("highScore"));
-  // Testing
-  // score = 9000;
-  //
+
   scoreDisplay.innerHTML = 0;
   levelStart();
   
@@ -695,13 +656,7 @@ export function gameStart() {
   pacmanCurrentIndex = 658;
   squares[pacmanCurrentIndex].classList.add('pacMan');
 
-  // Increment Level
-  // level = 9;
   level += 1;
-  // counterExtraLife = 1;
-  
-  // Set Level / Fruit Bonus
-  // ghostsEaten = 0;
   fruitBonusCurrent.length = 0;
   flagBonusLife = false;
   levelCurrent(level);
@@ -769,7 +724,6 @@ function launchFruitBonus2(){
       console.log(`clearInterval(launchFruitBonus2)`)
     squares[489].classList.add('bonusFruit');
     squares[489].innerHTML = fruitBonus[level-1];
-    // setTimeout(clearFruitBonus2, 10000);
     setTimeout(() => {
       clearFruitBonus2();
       switchToSiren2();
@@ -777,23 +731,12 @@ function launchFruitBonus2(){
   }
 }
 
-function clickStartGame() {
-  // setTitleScreen();
-  // resetGhostsSpeed();
-  
+function clickStartGame() {  
   if(level === 0){
     gameStart();
     joystickStart.style.backgroundColor = "orange";
     setTimeout(()=>{joystickStart.style.backgroundColor = "transparent"; }, 500); 
   }  
-  
-  // if(level !== 0) {
-  // setTitleScreen();
-  // level = 0;  
-  // clearInterval(speedStartPacMan);
-  // squares[pacmanCurrentIndex].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down');
-  // }
-
 }
 
 instructStartGame.addEventListener('click', clickStartGame);
@@ -931,6 +874,7 @@ export function resetGhostsSpeed(ghost) {
 
 export function moveGhost(ghost) {
   playSiren();
+  let previousIndex = ghost.currentIndex; 
 
   const directions = [-1, 1, 28, -28];
   let direction = directions[Math.floor(Math.random() * directions.length)];
@@ -971,6 +915,7 @@ export function moveGhost(ghost) {
     }
 
     if (foundValid) {
+    // if (foundValid) {
       // Eye direction
       if (direction === -1) {
         squares[ghost.currentIndex].classList.remove(ghost.eyes);
@@ -986,63 +931,46 @@ export function moveGhost(ghost) {
         ghost.eyes = `ghost-look-up-${eyeSize}`;
       }
 
-      // Ghost hover over pellets and powerPellets    
-      if (squares[ghost.currentIndex + direction].classList.contains('pellet')) {
-        squares[ghost.currentIndex + direction].classList.remove('pellet');
-        squares[ghost.currentIndex].classList.remove(
-          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
-          'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
-          'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
-        );
-        // Tunnel wrap for ghosts
-        if (direction === 1 && ghost.currentIndex === 418) { // Moving right, about to exit right tunnel
-          ghost.currentIndex = 391; // Will become 392 after +1
-        }
-        if (direction === -1 && ghost.currentIndex === 393) { // Moving left, about to exit left tunnel
-          ghost.currentIndex = 420; // Will become 419 after -1
-        }
-        ghost.currentIndex += direction;
-        squares[ghost.currentIndex - direction].classList.add('pellet');
-        squares[ghost.currentIndex].classList.add(
-          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
-        );
-      } else if (squares[ghost.currentIndex + direction].classList.contains('powerPellet')) {
-        squares[ghost.currentIndex + direction].classList.remove('powerPellet');
-        squares[ghost.currentIndex].classList.remove(
-          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
-          'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
-          'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
-        );
-        // Tunnel wrap for ghosts
-        if (direction === 1 && ghost.currentIndex === 418) { // Moving right, about to exit right tunnel
-          ghost.currentIndex = 391; // Will become 392 after +1
-        }
-        if (direction === -1 && ghost.currentIndex === 393) { // Moving left, about to exit left tunnel
-          ghost.currentIndex = 420; // Will become 419 after -1
-        }        
-        ghost.currentIndex += direction;
-        squares[ghost.currentIndex - direction].classList.add('powerPellet');
-        squares[ghost.currentIndex].classList.add(
-          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
-        );
-      } else {
-        squares[ghost.currentIndex].classList.remove(
-          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
-          'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
-          'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
-        );
-        // Tunnel wrap for ghosts
-        if (direction === 1 && ghost.currentIndex === 418) { // Moving right, about to exit right tunnel
-          ghost.currentIndex = 391; // Will become 392 after +1
-        }
-        if (direction === -1 && ghost.currentIndex === 393) { // Moving left, about to exit left tunnel
-          ghost.currentIndex = 420; // Will become 419 after -1
-        }        
-        ghost.currentIndex += direction;
-        squares[ghost.currentIndex].classList.add(
-          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
-        );
+      // Calculate next index
+      const nextIndex = ghost.currentIndex + direction;
+
+      // Remove pellet/powerPellet class from the new square if needed
+      if (pelletState[nextIndex] === 'pellet') {
+        squares[nextIndex].classList.remove('pellet');
       }
+      if (pelletState[nextIndex] === 'powerPellet') {
+        squares[nextIndex].classList.remove('powerPellet');
+      }
+
+      // Restore pellet/powerPellet class to the previous square if needed
+      squares[ghost.currentIndex].classList.remove('pellet', 'powerPellet');
+      if (pelletState[ghost.currentIndex] === 'pellet') {
+        squares[ghost.currentIndex].classList.add('pellet');
+      }
+      if (pelletState[ghost.currentIndex] === 'powerPellet') {
+        squares[ghost.currentIndex].classList.add('powerPellet');
+      }
+
+      // Remove ghost from current square
+      squares[ghost.currentIndex].classList.remove(
+        ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
+        'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
+        'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
+      );
+
+      // Tunnel wrap for ghosts
+      if (direction === 1 && ghost.currentIndex === 418) {
+        ghost.currentIndex = 391;
+      } else if (direction === -1 && ghost.currentIndex === 393) {
+        ghost.currentIndex = 420;
+      } else {
+        ghost.currentIndex = nextIndex;
+      }
+
+      // Add ghost to new square
+      squares[ghost.currentIndex].classList.add(
+        ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
+      );
     }
     // If no valid move, ghost stays in place this tick
 
@@ -1101,19 +1029,7 @@ export function unScareGhosts() {
   }
 
  ghosts.forEach(ghost => ghost.isScared = false);
-
-  // for(let i = 0; i < squares.length; i++) {
-  //   squares[i].classList.remove('scaredBlink');
-  //   squares[i].classList.remove('pacMan');
-  // }  
-  
- // ghosts.forEach(ghost => {
- //   ghosts.forEach(ghost => ghost.isScared = false);
-    // squares[ghost.currentIndex].classList.remove('scaredBlink');
- //   setTimeout(()=>{ squares[ghost.currentIndex].classList.remove('scaredBlink'); }, 5500);
-  // })
   
  ghostsEaten = 0;
-  //
  // resetGhostsSpeed(); // Check  level changes
 }

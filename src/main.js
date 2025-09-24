@@ -1,7 +1,7 @@
 import './styles/style.scss'
 import { buildGameBoard } from './js/game-board.js';
 import { width, toggleGameBoardSize, pacmanCurrentIndex, pacManDirection, pacmanCurrentDirection, control, score, highScore, fruitBonus, levelCurrent, level, fruitBonusCurrent, loseLife, ctnPacManLives, checkForHighScore, player1Start } from './js/helper-functions.js';
-import { squares, gameGrid, buildTheBoard, setTitleScreen, setScoreScreen } from './js/game-board.js';
+import { squares, gameGrid, buildTheBoard, setTitleScreen, setScoreScreen, addBlinkToPressStart, removeBlinkFromPressStart } from './js/game-board.js';
 
 // let flagToggleTittleAndScoreScreen;
 let intervalTitleAndScoreScreen = null;
@@ -13,6 +13,7 @@ buildTheBoard();
 // Start Toggle Title And ScoreScreen
 export function startToggleTitleAndScoreScreen() {
   player1Start.classList.add("blink");
+  addBlinkToPressStart();
   setTitleScreen();
   if(intervalTitleAndScoreScreen === null) {
     let flagToggleTitleAndScoreScreen = true;
@@ -33,6 +34,7 @@ startToggleTitleAndScoreScreen();
 // End Toggle Tittle And ScoreScreen
 export function endToggleTitleAndScoreScreen() {
   player1Start.classList.remove("blink");
+  removeBlinkFromPressStart();
   if(intervalTitleAndScoreScreen !== null) {
     clearInterval(intervalTitleAndScoreScreen);
     intervalTitleAndScoreScreen = null;

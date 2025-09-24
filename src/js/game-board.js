@@ -483,6 +483,38 @@ export function setScoreScreen() {
     squares[805].innerHTML = "!";  
 } // setScoreScreen
 
+export function addBlinkToPressStart() {    
+    squares[793].classList.add('blink');
+    squares[794].classList.add('blink');
+    squares[795].classList.add('blink');
+    squares[796].classList.add('blink');
+    squares[797].classList.add('blink');
+    squares[798].classList.add('blink');
+
+    squares[800].classList.add('blink');
+    squares[801].classList.add('blink');
+    squares[802].classList.add('blink');
+    squares[803].classList.add('blink');
+    squares[804].classList.add('blink');
+    squares[805].classList.add('blink');    
+}
+
+export function removeBlinkFromPressStart() {
+    squares[793].classList.remove('blink');
+    squares[794].classList.remove('blink');
+    squares[795].classList.remove('blink');
+    squares[796].classList.remove('blink');
+    squares[797].classList.remove('blink');
+    squares[798].classList.remove('blink');
+
+    squares[800].classList.remove('blink');
+    squares[801].classList.remove('blink');
+    squares[802].classList.remove('blink');
+    squares[803].classList.remove('blink');
+    squares[804].classList.remove('blink');
+    squares[805].classList.remove('blink');
+}
+
 export function setGameBoard() { 
     reSetLairTextColor();
     for(let i = 0; i < squares.length; i++) {

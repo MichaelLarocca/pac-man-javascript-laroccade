@@ -241,7 +241,34 @@ export function pacManDirection() {
 
 export const width = 28;
 export let pacmanCurrentIndex = 658;
+export let pacmanPreviousIndex = 658;
+
 // squares[658].classList.add('pacMan-move-left');
+
+export function handleGhostEaten(ghost) {
+  reSetLairTextColor("whitesmoke");
+  playGhostEatenSounds();
+
+  ghostsEaten += 1;
+  score += ghostsEaten * 400;
+  squares[433].innerHTML = ghostsEaten * 400;
+  setTimeout(() => { squares[433].innerHTML = ''; }, 5000);
+
+  // Set blinky to respawn inside the lair
+  squares[ghost.currentIndex].classList.remove(
+    ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
+    'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
+    'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
+  );
+  if (ghost.className === 'blinky') {
+    ghost.currentIndex = 380;
+  } else {
+    ghost.currentIndex = ghost.startIndex;
+  }
+  squares[ghost.currentIndex].classList.add(
+    ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
+  );
+}
 
 export function control(x) {
     // Determine how many steps to move
@@ -249,6 +276,7 @@ export function control(x) {
     const steps = inTunnel ? 2 : 1; // Move 2 steps in tunnel, 1 elsewhere
 
    for (let i = 0; i < steps; i++) { 
+    pacmanPreviousIndex = pacmanCurrentIndex; 
 
     squares[pacmanCurrentIndex].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down');
     switch(pacmanCurrentDirection) {
@@ -439,13 +467,29 @@ function addPacManLives(){
 }
 
 export function checkForGhostCatchesPacMan() {
-  if (
-    squares[pacmanCurrentIndex].classList.contains('ghost') &&
-    !squares[pacmanCurrentIndex].classList.contains('scared')) { 
-    ghosts.forEach(ghost => clearInterval(ghost.timerId));
-    loseLife();
-    removeGhosts();
+  ghosts.forEach(ghost => {
+    if (ghost.currentIndex === pacmanCurrentIndex) {
+      if (ghost.isScared) {
+        handleGhostEaten(ghost);
+      } else {
+        ghosts.forEach(g => clearInterval(g.timerId));
+        loseLife();
+        removeGhosts();
+      }
+    } else if (
+      ghost.currentIndex === pacmanPreviousIndex &&
+      ghost.previousIndex === pacmanCurrentIndex
+    ) {
+      console.log('Crossed-paths collision detected!', { ghost, pacmanCurrentIndex, pacmanPreviousIndex });
+      if (ghost.isScared) {
+        handleGhostEaten(ghost);
+      } else {
+        ghosts.forEach(g => clearInterval(g.timerId));
+        loseLife();
+        removeGhosts();
+      }
     }
+  });
 }
 
 // Function to animate PacMan dying
@@ -822,6 +866,7 @@ export class Ghost {
     this.color = color;
     this.eyes = eyes;
     this.currentIndex = startIndex;
+    this.previousIndex = startIndex;
     this.isScard = false;
     this.timerId = NaN;
     this.slowTick = 0;
@@ -874,7 +919,7 @@ export function resetGhostsSpeed(ghost) {
 
 export function moveGhost(ghost) {
   playSiren();
-  let previousIndex = ghost.currentIndex; 
+  // let previousIndex = ghost.currentIndex; 
 
   const directions = [-1, 1, 28, -28];
   let direction = directions[Math.floor(Math.random() * directions.length)];
@@ -915,7 +960,8 @@ export function moveGhost(ghost) {
     }
 
     if (foundValid) {
-    // if (foundValid) {
+      ghost.previousIndex = ghost.currentIndex;
+
       // Eye direction
       if (direction === -1) {
         squares[ghost.currentIndex].classList.remove(ghost.eyes);
@@ -986,36 +1032,6 @@ export function moveGhost(ghost) {
 
       squares[ghost.currentIndex].classList.add('scared');
       setTimeout(() => { squares[ghost.currentIndex].classList.add('scaredBlink'); }, 8000);
-    }
-
-    if (ghost.isScared && squares[ghost.currentIndex].classList.contains('pacMan')) {
-      reSetLairTextColor("whitesmoke");
-      playGhostEatenSounds();
-
-      ghostsEaten += 1;
-      score += ghostsEaten * 400;
-      squares[433].innerHTML = ghostsEaten * 400;
-      setTimeout(() => { squares[433].innerHTML = ''; }, 5000);
-
-      // Set blinky to respawn inside the lair
-      if (squares[ghost.currentIndex].classList.contains('blinky')) {
-        squares[ghost.currentIndex].classList.remove(
-          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
-          'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
-          'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
-        );
-        ghost.currentIndex = 380;
-      } else {
-        squares[ghost.currentIndex].classList.remove(
-          ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
-          'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
-          'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
-        );
-        ghost.currentIndex = ghost.startIndex;
-      }
-      squares[ghost.currentIndex].classList.add(
-        ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
-      );
     }
     checkForGhostCatchesPacMan();
   }, ghost.speed);

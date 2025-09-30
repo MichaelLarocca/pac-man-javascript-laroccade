@@ -241,6 +241,8 @@ export function pacManDirection() {
 
 export const width = 28;
 export let pacmanCurrentIndex = 658;
+export let pacmanPreviousIndex = 658;
+
 // squares[658].classList.add('pacMan-move-left');
 
 export function handleGhostEaten(ghost) {
@@ -274,6 +276,7 @@ export function control(x) {
     const steps = inTunnel ? 2 : 1; // Move 2 steps in tunnel, 1 elsewhere
 
    for (let i = 0; i < steps; i++) { 
+    pacmanPreviousIndex = pacmanCurrentIndex; 
 
     squares[pacmanCurrentIndex].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down');
     switch(pacmanCurrentDirection) {
@@ -466,6 +469,18 @@ function addPacManLives(){
 export function checkForGhostCatchesPacMan() {
   ghosts.forEach(ghost => {
     if (ghost.currentIndex === pacmanCurrentIndex) {
+      if (ghost.isScared) {
+        handleGhostEaten(ghost);
+      } else {
+        ghosts.forEach(g => clearInterval(g.timerId));
+        loseLife();
+        removeGhosts();
+      }
+    } else if (
+      ghost.currentIndex === pacmanPreviousIndex &&
+      ghost.previousIndex === pacmanCurrentIndex
+    ) {
+      console.log('Crossed-paths collision detected!', { ghost, pacmanCurrentIndex, pacmanPreviousIndex });
       if (ghost.isScared) {
         handleGhostEaten(ghost);
       } else {
@@ -851,6 +866,7 @@ export class Ghost {
     this.color = color;
     this.eyes = eyes;
     this.currentIndex = startIndex;
+    this.previousIndex = startIndex;
     this.isScard = false;
     this.timerId = NaN;
     this.slowTick = 0;
@@ -903,7 +919,7 @@ export function resetGhostsSpeed(ghost) {
 
 export function moveGhost(ghost) {
   playSiren();
-  let previousIndex = ghost.currentIndex; 
+  // let previousIndex = ghost.currentIndex; 
 
   const directions = [-1, 1, 28, -28];
   let direction = directions[Math.floor(Math.random() * directions.length)];
@@ -944,7 +960,8 @@ export function moveGhost(ghost) {
     }
 
     if (foundValid) {
-    // if (foundValid) {
+      ghost.previousIndex = ghost.currentIndex;
+
       // Eye direction
       if (direction === -1) {
         squares[ghost.currentIndex].classList.remove(ghost.eyes);

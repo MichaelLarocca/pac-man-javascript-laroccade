@@ -143,6 +143,22 @@ export let ghostSize = "small";
     });
   }; // toggleGameBoardSize
 
+export function syncPelletClasses() {
+  for (let i = 0; i < pelletState.length; i++) {
+    // Only add pellet class if no ghost is present
+    if (pelletState[i] === 'pellet' && !squares[i].classList.contains('ghost')) {
+      squares[i].classList.add('pellet');
+    } else {
+      squares[i].classList.remove('pellet');
+    }
+    if (pelletState[i] === 'powerPellet' && !squares[i].classList.contains('ghost')) {
+      squares[i].classList.add('powerPellet');
+    } else {
+      squares[i].classList.remove('powerPellet');
+    }
+  }
+}
+
 // Pac Man
 export let pacmanCurrentDirection = "left";
 
@@ -366,6 +382,7 @@ export function control(x) {
     // stopPacManEatingPelletsSound();
     
    } // end for steps 
+   syncPelletClasses();
   } // control
 
 function fruitScoreBonus(){
@@ -989,13 +1006,13 @@ export function moveGhost(ghost) {
       }
 
       // Restore pellet/powerPellet class to the previous square if needed
-      squares[ghost.currentIndex].classList.remove('pellet', 'powerPellet');
-      if (pelletState[ghost.currentIndex] === 'pellet') {
-        squares[ghost.currentIndex].classList.add('pellet');
-      }
-      if (pelletState[ghost.currentIndex] === 'powerPellet') {
-        squares[ghost.currentIndex].classList.add('powerPellet');
-      }
+      // squares[ghost.currentIndex].classList.remove('pellet', 'powerPellet');
+      // if (pelletState[ghost.currentIndex] === 'pellet') {
+      //   squares[ghost.currentIndex].classList.add('pellet');
+      // }
+      // if (pelletState[ghost.currentIndex] === 'powerPellet') {
+      //   squares[ghost.currentIndex].classList.add('powerPellet');
+      // }
 
       // Remove ghost from current square
       squares[ghost.currentIndex].classList.remove(
@@ -1012,6 +1029,9 @@ export function moveGhost(ghost) {
       } else {
         ghost.currentIndex = nextIndex;
       }
+
+      // Remove pellet/powerPellet class from the new square if needed
+      squares[ghost.currentIndex].classList.remove('pellet', 'powerPellet');
 
       // Add ghost to new square
       squares[ghost.currentIndex].classList.add(
@@ -1033,6 +1053,7 @@ export function moveGhost(ghost) {
       squares[ghost.currentIndex].classList.add('scared');
       setTimeout(() => { squares[ghost.currentIndex].classList.add('scaredBlink'); }, 8000);
     }
+    syncPelletClasses();
     checkForGhostCatchesPacMan();
   }, ghost.speed);
 }

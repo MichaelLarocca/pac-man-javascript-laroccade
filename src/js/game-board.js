@@ -2,6 +2,18 @@ import { levelComplete, counterPelet, fruitBonus, fruitBonusValue, resetGhosts, 
 export const squares = [];
 export const gameGrid = document.getElementById("game-grid");
 export const pelletState = [];
+export const intersectionIndices = [
+    34, 49,
+    141, 146, 149, 152, 155, 158, 161, 166,
+    230, 245,
+    320, 323,
+    377, 378,
+    398, 401, 410, 413,
+    485, 494,
+    566, 569, 578, 581,
+    650, 653, 656, 659, 662, 665,
+    824, 827
+];
 
   const overlayArray = [
       1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -111,7 +123,12 @@ export function buildTheBoard() {
     let div = document.createElement("div");
     gameGrid.appendChild(div);  
     squares.push(div);
-     squares[i].classList.add('game-board-square');      
+     squares[i].classList.add('game-board-square');  
+
+        if (intersectionIndices.includes(i)) {
+        squares[i].classList.add('intersection');
+        }    
+     
   }    
 }
 
@@ -566,10 +583,17 @@ export function setGameBoard() {
   // ghosts.forEach(ghost => moveGhost(ghost));
  } // setGameBoard
 
+function addIntersections() {
+    intersectionIndices.forEach(idx => {
+        squares[idx].classList.add('intersection');
+    });
+}
+
 export function buildGameBoard(){
   buildTheBoard();
   setGameBoard();
   roundOutTheGameboard();
+addIntersections();
   // setLairText();
 } // function buildGameBoard
 

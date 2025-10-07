@@ -1,4 +1,4 @@
-import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen, reSetLairTextColor, setTunnel, pelletState } from './game-board.js';
+import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen, reSetLairTextColor, setTunnel, pelletState, intersectionIndices } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
 import { playSiren, stopSiren, switchToSiren2, stopPacManEatingPelletsSound, playPacManEatingPelletsSound, playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
 
@@ -934,6 +934,10 @@ export function resetGhostsSpeed(ghost) {
   ghosts[3].speed = 300; // clyde  
 }
 
+function isIntersection(index) {
+  return intersectionIndices.includes(index);
+}
+
 export function moveGhost(ghost) {
   playSiren();
   // let previousIndex = ghost.currentIndex; 
@@ -955,6 +959,26 @@ export function moveGhost(ghost) {
       ghost.slowTick = 0; // Reset after moving
     } else {
       ghost.slowTick = 0; // Reset if not slowed
+    }
+
+      if (isIntersection(ghost.currentIndex)) {
+      // Exclude reverse direction unless scared
+      const reverseDir = ghost.previousIndex - ghost.currentIndex;
+      let validDirections = directions.filter(dir => {
+        if (!ghost.isScared && dir === reverseDir) return false;
+        const nextIndex = ghost.currentIndex + dir;
+        return (
+          !squares[nextIndex].classList.contains('ghost') &&
+          !squares[nextIndex].classList.contains('lairText') &&
+          !squares[nextIndex].classList.contains('wall') &&
+          !(dir === 28 && squares[nextIndex].classList.contains('lairWall')) &&
+          (nextIndex !== 375) &&
+          (nextIndex !== 380)
+        );
+      });
+      if (validDirections.length > 0) {
+        direction = validDirections[Math.floor(Math.random() * validDirections.length)];
+      }
     }
 
     while (!foundValid && attempts < directions.length) {

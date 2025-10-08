@@ -289,7 +289,8 @@ export function handleGhostEaten(ghost) {
 export function control(x) {
     // Determine how many steps to move
     const inTunnel = squares[pacmanCurrentIndex].classList.contains('tunnel');
-    const steps = inTunnel ? 2 : 1; // Move 2 steps in tunnel, 1 elsewhere
+    // const steps = inTunnel ? 2 : 1; // Move 2 steps in tunnel, 1 elsewhere
+    const steps = 1; // Move 1 step at a time
 
    for (let i = 0; i < steps; i++) { 
     pacmanPreviousIndex = pacmanCurrentIndex; 

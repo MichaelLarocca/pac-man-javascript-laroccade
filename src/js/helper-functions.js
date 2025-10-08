@@ -465,11 +465,11 @@ export function levelStart() {
 } // setPacManSpeed
 
 // Use K to kill Pac-Man
-document.addEventListener('keydown', (e) => {
-  if(e.keyCode === 75) {
-    loseLife();
-  }
-});  
+// document.addEventListener('keydown', (e) => {
+//   if(e.keyCode === 75) {
+//     loseLife();
+//   }
+// });  
 
 export const ctnPacManLives = document.getElementById('ctn-pac-man-lives');
 

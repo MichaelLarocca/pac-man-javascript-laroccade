@@ -281,6 +281,7 @@ export function handleGhostEaten(ghost) {
   } else {
     ghost.currentIndex = ghost.startIndex;
   }
+  ghost.isScared = false;
   squares[ghost.currentIndex].classList.add(
     ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
   );

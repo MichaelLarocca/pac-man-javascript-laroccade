@@ -774,7 +774,8 @@ function launchFruitBonus1(){
     clearInterval(launchFruitBonus1);
       console.log(`clearInterval(launchFruitBonus1)`)
     squares[489].classList.add('bonusFruit');
-    squares[489].innerHTML = fruitBonus[level-1];
+    // squares[489].innerHTML = fruitBonus[level-1];
+    squares[489].innerHTML = fruitBonus[level-1 < fruitBonus.length ? level-1 : fruitBonus.length-1];
     setTimeout(clearFruitBonus1, 10000);
   }
   
@@ -786,7 +787,8 @@ function launchFruitBonus2(){
     clearInterval(launchFruitBonus2);
       console.log(`clearInterval(launchFruitBonus2)`)
     squares[489].classList.add('bonusFruit');
-    squares[489].innerHTML = fruitBonus[level-1];
+    // squares[489].innerHTML = fruitBonus[level-1];
+    squares[489].innerHTML = fruitBonus[level-1 < fruitBonus.length ? level-1 : fruitBonus.length-1];
     setTimeout(() => {
       clearFruitBonus2();
       switchToSiren2();

@@ -347,17 +347,19 @@ export function control(x) {
         break;
     }
     // Collision and Points
-      if (squares[pacmanCurrentIndex].classList.contains('pellet')) {
+      // if (squares[pacmanCurrentIndex].classList.contains('pellet')) {
+      if (pelletState[pacmanCurrentIndex] === 'pellet') {
         playPacManEatingPelletsSound();
         squares[pacmanCurrentIndex].classList.remove('pellet');
-        pelletState[pacmanCurrentIndex] = null; // <-- Add this line
+        pelletState[pacmanCurrentIndex] = null;
         counterPelet += 1;
         score += 10;
       } else {
         stopPacManEatingPelletsSound();
       }
 
-    if(squares[pacmanCurrentIndex].classList.contains('powerPellet')){
+    // if(squares[pacmanCurrentIndex].classList.contains('powerPellet')){
+    if (pelletState[pacmanCurrentIndex] === 'powerPellet') {  
       squares[pacmanCurrentIndex].classList.remove('powerPellet');
       pelletState[pacmanCurrentIndex] = null;
       score += 50; 
@@ -490,6 +492,28 @@ export function checkForGhostCatchesPacMan() {
     if (ghost.currentIndex === pacmanCurrentIndex) {
       if (ghost.isScared) {
         handleGhostEaten(ghost);
+    // Eat pellet if present in pelletState
+      if (pelletState[pacmanCurrentIndex] === 'pellet') {
+        squares[pacmanCurrentIndex].classList.remove('pellet');
+        pelletState[pacmanCurrentIndex] = null;
+        counterPelet += 1;
+        score += 10;
+        playPacManEatingPelletsSound();
+      } else {
+        stopPacManEatingPelletsSound();
+      }
+
+      // Eat power pellet if present in pelletState
+      if (pelletState[pacmanCurrentIndex] === 'powerPellet') {
+        squares[pacmanCurrentIndex].classList.remove('powerPellet');
+        pelletState[pacmanCurrentIndex] = null;
+        score += 50;
+        stopSiren();
+        soundPowerUp.play();
+        clearTimeout(timerPowerPellet);
+        ghosts.forEach(g => g.isScared = true);
+        timerPowerPellet = setTimeout(unScareGhosts, 9000);
+      }  
       } else {
         ghosts.forEach(g => clearInterval(g.timerId));
         loseLife();
@@ -502,6 +526,28 @@ export function checkForGhostCatchesPacMan() {
       console.log('Crossed-paths collision detected!', { ghost, pacmanCurrentIndex, pacmanPreviousIndex });
       if (ghost.isScared) {
         handleGhostEaten(ghost);
+      // Eat pellet if present in pelletState
+      if (pelletState[pacmanCurrentIndex] === 'pellet') {
+        squares[pacmanCurrentIndex].classList.remove('pellet');
+        pelletState[pacmanCurrentIndex] = null;
+        counterPelet += 1;
+        score += 10;
+        playPacManEatingPelletsSound();
+      } else {
+        stopPacManEatingPelletsSound();
+      }
+
+      // Eat power pellet if present in pelletState
+      if (pelletState[pacmanCurrentIndex] === 'powerPellet') {
+        squares[pacmanCurrentIndex].classList.remove('powerPellet');
+        pelletState[pacmanCurrentIndex] = null;
+        score += 50;
+        stopSiren();
+        soundPowerUp.play();
+        clearTimeout(timerPowerPellet);
+        ghosts.forEach(g => g.isScared = true);
+        timerPowerPellet = setTimeout(unScareGhosts, 9000);
+      }        
       } else {
         ghosts.forEach(g => clearInterval(g.timerId));
         loseLife();

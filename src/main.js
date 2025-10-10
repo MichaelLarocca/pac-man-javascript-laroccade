@@ -1,3 +1,6 @@
+// This is a fan-made, educational project inspired by Pac-Man (Namco).
+// See README.md for full disclaimer and licensing details.
+
 import './styles/style.scss'
 import { buildGameBoard } from './js/game-board.js';
 import { width, toggleGameBoardSize, pacmanCurrentIndex, pacManDirection, pacmanCurrentDirection, control, score, highScore, fruitBonus, levelCurrent, level, fruitBonusCurrent, loseLife, ctnPacManLives, checkForHighScore, player1Start } from './js/helper-functions.js';

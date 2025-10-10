@@ -8,7 +8,8 @@ A modern, vanilla JavaScript implementation of the classic Pac-Man arcade game, 
 * **Keyboard:** Use the arrow keys (↑, ↓, ←, →) to move Pac-Man.
 * **Touch:** On mobile or touch devices, tap the on-screen arrows to control Pac-Man’s direction.
 
-###### *(Based on Ania Kubow's game tutorial, featured by freeCodeCamp & Scrimba)*
+###### (Based on Ania Kubow's game tutorial, featured by freeCodeCamp & Scrimba)
+###### *This project is a fan-made, educational recreation inspired by the original Pac-Man game by Namco. It is intended for learning and personal use only, and is not affiliated with, endorsed by, or connected to Namco or Bandai Namco Entertainment.*
 
 ![Pac-Man Logo](/public/images/LC-Pac-Man-screen-shot.png)
 

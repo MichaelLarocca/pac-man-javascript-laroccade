@@ -366,7 +366,10 @@ export function control(x) {
       stopSiren();
       soundPowerUp.play();
         clearTimeout(timerPowerPellet);
-      ghosts.forEach(ghost => ghost.isScared = true);
+      ghosts.forEach(ghost => {
+        ghost.isScared = true; 
+        ghost.hasReversed = false;
+      });
         timerPowerPellet = setTimeout(unScareGhosts, 9000);
     }
     if(squares[pacmanCurrentIndex].classList.contains('bonusFruit')) {
@@ -934,9 +937,10 @@ export class Ghost {
     this.eyes = eyes;
     this.currentIndex = startIndex;
     this.previousIndex = startIndex;
-    this.isScard = false;
+    this.isScared = false;
     this.timerId = NaN;
     this.slowTick = 0;
+    this.hasReversed = false;
   }
 }
 
@@ -993,8 +997,9 @@ export function moveGhost(ghost) {
   // let previousIndex = ghost.currentIndex; 
 
   const directions = [-1, 1, 28, -28];
-  let direction = directions[Math.floor(Math.random() * directions.length)];
-
+  // let direction = directions[Math.floor(Math.random() * directions.length)];
+  let direction = ghost.direction || directions[Math.floor(Math.random() * directions.length)];
+  
   ghost.timerId = setInterval(function() {
     let foundValid = false;
     let attempts = 0;
@@ -1010,12 +1015,17 @@ export function moveGhost(ghost) {
     } else {
       ghost.slowTick = 0; // Reset if not slowed
     }
+      if (ghost.isScared && !ghost.hasReversed) {
+        direction = -direction;
+        ghost.hasReversed = true;
+      }
 
       if (isIntersection(ghost.currentIndex)) {
       // Exclude reverse direction unless scared
       const reverseDir = ghost.previousIndex - ghost.currentIndex;
       let validDirections = directions.filter(dir => {
-        if (!ghost.isScared && dir === reverseDir) return false;
+        // if (!ghost.isScared && dir === reverseDir) return false;
+        if (dir === reverseDir) return false;
         const nextIndex = ghost.currentIndex + dir;
         return (
           !squares[nextIndex].classList.contains('ghost') &&
@@ -1026,10 +1036,16 @@ export function moveGhost(ghost) {
           (nextIndex !== 380)
         );
       });
-      if (validDirections.length > 0) {
-        direction = validDirections[Math.floor(Math.random() * validDirections.length)];
+
+        if (validDirections.length === 0) {
+        validDirections = [reverseDir];
+        }
+        
+        if (validDirections.length > 0) {
+          direction = validDirections[Math.floor(Math.random() * validDirections.length)];
+          ghost.direction = direction;
+        }
       }
-    }
 
     while (!foundValid && attempts < directions.length) {
       const nextIndex = ghost.currentIndex + direction;
@@ -1119,10 +1135,10 @@ export function moveGhost(ghost) {
       soundGhostSiren1.currentTime = 0;
 
       // Change ghost direction when scared
-      if (direction === 1) { direction = -1; }
-      if (direction === -1) { direction = 1; }
-      if (direction === 28) { direction = -28; }
-      if (direction === -28) { direction = 28; }
+      // if (direction === 1) { direction = -1; }
+      // if (direction === -1) { direction = 1; }
+      // if (direction === 28) { direction = -28; }
+      // if (direction === -28) { direction = 28; }
 
       squares[ghost.currentIndex].classList.add('scared');
       setTimeout(() => { squares[ghost.currentIndex].classList.add('scaredBlink'); }, 8000);
@@ -1139,7 +1155,10 @@ export function unScareGhosts() {
     playSiren();
   }
 
- ghosts.forEach(ghost => ghost.isScared = false);
+ ghosts.forEach(ghost => {
+  ghost.isScared = false;
+  ghost.hasReversed = false;
+});
   
  ghostsEaten = 0;
  // resetGhostsSpeed(); // Check  level changes

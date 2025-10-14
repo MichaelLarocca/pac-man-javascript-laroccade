@@ -6,6 +6,7 @@ export let score = 0;
 export let highScore;
 
 let timerPowerPellet;
+let currentPelletDuration = 9000;
 
 if(JSON.parse(localStorage.getItem("highScore")) !== null) {
     highScore = JSON.parse(localStorage.getItem("highScore"));  
@@ -287,6 +288,10 @@ export function handleGhostEaten(ghost) {
   );
 }
 
+function getPowerPelletDuration(level) {
+  return Math.max(9000 - (level - 1) * 1000, 1000); // ms
+}
+
 export function control(x) {
     // Determine how many steps to move
     const inTunnel = squares[pacmanCurrentIndex].classList.contains('tunnel');
@@ -365,12 +370,22 @@ export function control(x) {
       score += 50; 
       stopSiren();
       soundPowerUp.play();
-        clearTimeout(timerPowerPellet);
+      clearTimeout(timerPowerPellet);
+
+      const pelletDuration = getPowerPelletDuration(level);
+        console.log(`Power Pellet Duration: ${pelletDuration}ms (Level ${level})`);
+      currentPelletDuration = pelletDuration;
+
+      setTimeout(() => {
+        soundPowerUp.pause();
+        soundPowerUp.currentTime = 0;
+      }, pelletDuration);
+
       ghosts.forEach(ghost => {
         ghost.isScared = true; 
         ghost.hasReversed = false;
       });
-        timerPowerPellet = setTimeout(unScareGhosts, 9000);
+        timerPowerPellet = setTimeout(unScareGhosts, pelletDuration);
     }
     if(squares[pacmanCurrentIndex].classList.contains('bonusFruit')) {
       squares[pacmanCurrentIndex].classList.remove('bonusFruit');
@@ -514,8 +529,18 @@ export function checkForGhostCatchesPacMan() {
         stopSiren();
         soundPowerUp.play();
         clearTimeout(timerPowerPellet);
+
+        const pelletDuration = getPowerPelletDuration(level);
+          console.log(`Power Pellet Duration: ${pelletDuration}ms (Level ${level})`);
+        currentPelletDuration = pelletDuration;
+
+        setTimeout(() => {
+          soundPowerUp.pause();
+          soundPowerUp.currentTime = 0;
+        }, pelletDuration);
+
         ghosts.forEach(g => g.isScared = true);
-        timerPowerPellet = setTimeout(unScareGhosts, 9000);
+        timerPowerPellet = setTimeout(unScareGhosts, pelletDuration);
       }  
       } else {
         ghosts.forEach(g => clearInterval(g.timerId));
@@ -548,8 +573,18 @@ export function checkForGhostCatchesPacMan() {
         stopSiren();
         soundPowerUp.play();
         clearTimeout(timerPowerPellet);
+
+        const pelletDuration = getPowerPelletDuration(level);
+          console.log(`Power Pellet Duration: ${pelletDuration}ms (Level ${level})`);
+        currentPelletDuration = pelletDuration;
+
+        setTimeout(() => {
+          soundPowerUp.pause();
+          soundPowerUp.currentTime = 0;
+        }, pelletDuration);
+
         ghosts.forEach(g => g.isScared = true);
-        timerPowerPellet = setTimeout(unScareGhosts, 9000);
+        timerPowerPellet = setTimeout(unScareGhosts, pelletDuration);
       }        
       } else {
         ghosts.forEach(g => clearInterval(g.timerId));
@@ -1141,7 +1176,8 @@ export function moveGhost(ghost) {
       // if (direction === -28) { direction = 28; }
 
       squares[ghost.currentIndex].classList.add('scared');
-      setTimeout(() => { squares[ghost.currentIndex].classList.add('scaredBlink'); }, 8000);
+      // setTimeout(() => { squares[ghost.currentIndex].classList.add('scaredBlink'); }, pelletDuration - 1000);
+      setTimeout(() => { squares[ghost.currentIndex].classList.add('scaredBlink'); }, currentPelletDuration - 1000);
     }
     syncPelletClasses();
     checkForGhostCatchesPacMan();

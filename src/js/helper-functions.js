@@ -1,4 +1,4 @@
-import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen, reSetLairTextColor } from './game-board.js';
+import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen, reSetLairTextColor, setTunnel, pelletState, intersectionIndices } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
 import { playSiren, stopSiren, switchToSiren2, stopPacManEatingPelletsSound, playPacManEatingPelletsSound, playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
 
@@ -6,6 +6,7 @@ export let score = 0;
 export let highScore;
 
 let timerPowerPellet;
+let currentPelletDuration = 9000;
 
 if(JSON.parse(localStorage.getItem("highScore")) !== null) {
     highScore = JSON.parse(localStorage.getItem("highScore"));  
@@ -15,14 +16,9 @@ if(JSON.parse(localStorage.getItem("highScore")) !== null) {
 
 export function checkForHighScore() {
       if(score >= highScore) {
-        // if(score !== 0) {
-        //   soundHighScore.play();
-        // }
-
         highScore = score;
         localStorage.setItem("highScore", JSON.stringify(highScore));
         highScore = JSON.parse(localStorage.getItem("highScore"));
-        // highScoreDisplaySpan.innerText = `${highScore}`; Caused error
       }
 }
 checkForHighScore();
@@ -148,6 +144,22 @@ export let ghostSize = "small";
     });
   }; // toggleGameBoardSize
 
+export function syncPelletClasses() {
+  for (let i = 0; i < pelletState.length; i++) {
+    // Only add pellet class if no ghost is present
+    if (pelletState[i] === 'pellet' && !squares[i].classList.contains('ghost')) {
+      squares[i].classList.add('pellet');
+    } else {
+      squares[i].classList.remove('pellet');
+    }
+    if (pelletState[i] === 'powerPellet' && !squares[i].classList.contains('ghost')) {
+      squares[i].classList.add('powerPellet');
+    } else {
+      squares[i].classList.remove('powerPellet');
+    }
+  }
+}
+
 // Pac Man
 export let pacmanCurrentDirection = "left";
 
@@ -246,9 +258,49 @@ export function pacManDirection() {
 
 export const width = 28;
 export let pacmanCurrentIndex = 658;
+export let pacmanPreviousIndex = 658;
+
 // squares[658].classList.add('pacMan-move-left');
 
+export function handleGhostEaten(ghost) {
+  reSetLairTextColor("whitesmoke");
+  playGhostEatenSounds();
+
+  ghostsEaten += 1;
+  score += ghostsEaten * 400;
+  squares[433].innerHTML = ghostsEaten * 400;
+  setTimeout(() => { squares[433].innerHTML = ''; }, 5000);
+
+  // Set blinky to respawn inside the lair
+  squares[ghost.currentIndex].classList.remove(
+    ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
+    'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
+    'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
+  );
+  if (ghost.className === 'blinky') {
+    ghost.currentIndex = 380;
+  } else {
+    ghost.currentIndex = ghost.startIndex;
+  }
+  ghost.isScared = false;
+  squares[ghost.currentIndex].classList.add(
+    ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
+  );
+}
+
+function getPowerPelletDuration(level) {
+  return Math.max(9000 - (level - 1) * 1000, 1000); // ms
+}
+
 export function control(x) {
+    // Determine how many steps to move
+    const inTunnel = squares[pacmanCurrentIndex].classList.contains('tunnel');
+    // const steps = inTunnel ? 2 : 1; // Move 2 steps in tunnel, 1 elsewhere
+    const steps = 1; // Move 1 step at a time
+
+   for (let i = 0; i < steps; i++) { 
+    pacmanPreviousIndex = pacmanCurrentIndex; 
+
     squares[pacmanCurrentIndex].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down');
     switch(pacmanCurrentDirection) {
         case 'down':
@@ -300,26 +352,40 @@ export function control(x) {
         break;
     }
     // Collision and Points
-    if(squares[pacmanCurrentIndex].classList.contains('pellet')) {
-      
-      playPacManEatingPelletsSound();
+      // if (squares[pacmanCurrentIndex].classList.contains('pellet')) {
+      if (pelletState[pacmanCurrentIndex] === 'pellet') {
+        playPacManEatingPelletsSound();
+        squares[pacmanCurrentIndex].classList.remove('pellet');
+        pelletState[pacmanCurrentIndex] = null;
+        counterPelet += 1;
+        score += 10;
+      } else {
+        stopPacManEatingPelletsSound();
+      }
 
-      squares[pacmanCurrentIndex].classList.remove('pellet');
-      counterPelet += 1;
-        // console.log(`counterPelet: ${counterPelet}`);
-      score += 10;
-        // console.log(`score: ${score}`);
-    } else {
-      stopPacManEatingPelletsSound(); // Stop the sound when Pac-Man moves without eating a pellet
-    }
-    if(squares[pacmanCurrentIndex].classList.contains('powerPellet')){
+    // if(squares[pacmanCurrentIndex].classList.contains('powerPellet')){
+    if (pelletState[pacmanCurrentIndex] === 'powerPellet') {  
       squares[pacmanCurrentIndex].classList.remove('powerPellet');
+      pelletState[pacmanCurrentIndex] = null;
       score += 50; 
       stopSiren();
       soundPowerUp.play();
-        clearTimeout(timerPowerPellet);
-      ghosts.forEach(ghost => ghost.isScared = true);
-        timerPowerPellet = setTimeout(unScareGhosts, 9000);
+      clearTimeout(timerPowerPellet);
+
+      const pelletDuration = getPowerPelletDuration(level);
+        console.log(`Power Pellet Duration: ${pelletDuration}ms (Level ${level})`);
+      currentPelletDuration = pelletDuration;
+
+      setTimeout(() => {
+        soundPowerUp.pause();
+        soundPowerUp.currentTime = 0;
+      }, pelletDuration);
+
+      ghosts.forEach(ghost => {
+        ghost.isScared = true; 
+        ghost.hasReversed = false;
+      });
+        timerPowerPellet = setTimeout(unScareGhosts, pelletDuration);
     }
     if(squares[pacmanCurrentIndex].classList.contains('bonusFruit')) {
       squares[pacmanCurrentIndex].classList.remove('bonusFruit');
@@ -328,12 +394,7 @@ export function control(x) {
       }
     }
   
-    // if(score >= highScore) {
-    //   highScore = score;
-    // }
     checkForHighScore();
-    // squares[392].classList.add('powerPellet');
-    // squares[419].classList.add('powerPellet');
   
     squares[pacmanCurrentIndex].classList.add('pacMan');
     scoreDisplay.innerText = score;
@@ -341,6 +402,9 @@ export function control(x) {
     highScoreDisplaySpan.innerText = highScore;
 
     // stopPacManEatingPelletsSound();
+    
+   } // end for steps 
+   syncPelletClasses();
   } // control
 
 function fruitScoreBonus(){
@@ -405,13 +469,7 @@ export function levelStart() {
   resetGhosts();  
   
   setTimeout(function(){ 
-    // alert("Hello"); 
-    
-    // Code for Level Complete
-    // for(let i = 0; i < squares.length; i++) {
-    //   squares[i].classList.add('level-completed');
-    // }
-    
+
     squares[431].innerHTML = "";
     squares[432].innerHTML = "";
     squares[433].innerHTML = "";
@@ -429,11 +487,11 @@ export function levelStart() {
 } // setPacManSpeed
 
 // Use K to kill Pac-Man
-document.addEventListener('keydown', (e) => {
-  if(e.keyCode === 75) {
-    loseLife();
-  }
-});  
+// document.addEventListener('keydown', (e) => {
+//   if(e.keyCode === 75) {
+//     loseLife();
+//   }
+// });  
 
 export const ctnPacManLives = document.getElementById('ctn-pac-man-lives');
 
@@ -448,13 +506,93 @@ function addPacManLives(){
 }
 
 export function checkForGhostCatchesPacMan() {
-  if (
-    squares[pacmanCurrentIndex].classList.contains('ghost') &&
-    !squares[pacmanCurrentIndex].classList.contains('scared')) { 
-    ghosts.forEach(ghost => clearInterval(ghost.timerId));
-    loseLife();
-    removeGhosts();
+  ghosts.forEach(ghost => {
+    if (ghost.currentIndex === pacmanCurrentIndex) {
+      if (ghost.isScared) {
+        handleGhostEaten(ghost);
+    // Eat pellet if present in pelletState
+      if (pelletState[pacmanCurrentIndex] === 'pellet') {
+        squares[pacmanCurrentIndex].classList.remove('pellet');
+        pelletState[pacmanCurrentIndex] = null;
+        counterPelet += 1;
+        score += 10;
+        playPacManEatingPelletsSound();
+      } else {
+        stopPacManEatingPelletsSound();
+      }
+
+      // Eat power pellet if present in pelletState
+      if (pelletState[pacmanCurrentIndex] === 'powerPellet') {
+        squares[pacmanCurrentIndex].classList.remove('powerPellet');
+        pelletState[pacmanCurrentIndex] = null;
+        score += 50;
+        stopSiren();
+        soundPowerUp.play();
+        clearTimeout(timerPowerPellet);
+
+        const pelletDuration = getPowerPelletDuration(level);
+          console.log(`Power Pellet Duration: ${pelletDuration}ms (Level ${level})`);
+        currentPelletDuration = pelletDuration;
+
+        setTimeout(() => {
+          soundPowerUp.pause();
+          soundPowerUp.currentTime = 0;
+        }, pelletDuration);
+
+        ghosts.forEach(g => g.isScared = true);
+        timerPowerPellet = setTimeout(unScareGhosts, pelletDuration);
+      }  
+      } else {
+        ghosts.forEach(g => clearInterval(g.timerId));
+        loseLife();
+        removeGhosts();
+      }
+    } else if (
+      ghost.currentIndex === pacmanPreviousIndex &&
+      ghost.previousIndex === pacmanCurrentIndex
+    ) {
+      console.log('Crossed-paths collision detected!', { ghost, pacmanCurrentIndex, pacmanPreviousIndex });
+      if (ghost.isScared) {
+        handleGhostEaten(ghost);
+      // Eat pellet if present in pelletState
+      if (pelletState[pacmanCurrentIndex] === 'pellet') {
+        squares[pacmanCurrentIndex].classList.remove('pellet');
+        pelletState[pacmanCurrentIndex] = null;
+        counterPelet += 1;
+        score += 10;
+        playPacManEatingPelletsSound();
+      } else {
+        stopPacManEatingPelletsSound();
+      }
+
+      // Eat power pellet if present in pelletState
+      if (pelletState[pacmanCurrentIndex] === 'powerPellet') {
+        squares[pacmanCurrentIndex].classList.remove('powerPellet');
+        pelletState[pacmanCurrentIndex] = null;
+        score += 50;
+        stopSiren();
+        soundPowerUp.play();
+        clearTimeout(timerPowerPellet);
+
+        const pelletDuration = getPowerPelletDuration(level);
+          console.log(`Power Pellet Duration: ${pelletDuration}ms (Level ${level})`);
+        currentPelletDuration = pelletDuration;
+
+        setTimeout(() => {
+          soundPowerUp.pause();
+          soundPowerUp.currentTime = 0;
+        }, pelletDuration);
+
+        ghosts.forEach(g => g.isScared = true);
+        timerPowerPellet = setTimeout(unScareGhosts, pelletDuration);
+      }        
+      } else {
+        ghosts.forEach(g => clearInterval(g.timerId));
+        loseLife();
+        removeGhosts();
+      }
     }
+  });
 }
 
 // Function to animate PacMan dying
@@ -478,6 +616,10 @@ export function loseLife(){
   stopAllSounds();
   soundDeath.play();
   lives -= 1;
+  clearInterval(launchFruitBonus1);
+  clearInterval(launchFruitBonus2);
+  squares[489].classList.remove('bonusFruit');
+  squares[489].innerHTML = '';
   
   if(lives>0){
     document.querySelector('.pac-man-lives').remove();
@@ -531,9 +673,6 @@ function extraLife() {
       lives += 1;
       flagBonusLife = true;
       soundHighScore.play();
-        // console.log(`extraLife: ${lives}`);
-        // console.log(`flagBonusLife: ${flagBonusLife}`)
-        // console.log(`Lives: ${lives}`);
      
       const pacManLife = document.createElement('div');
       pacManLife.classList.add('pac-man-lives');
@@ -559,16 +698,6 @@ function extraLife() {
       reSetLairTextColor();
     }, 3000);
   }
-  // if(score !== 0 && checkForBonusLife === 0 && flagBonusLife === false){
-  //     lives += 1;
-  //     flagBonusLife = true;
-  //       console.log(`extraLife: ${lives}`);
-  //       console.log(`flagBonusLife: ${flagBonusLife}`)
-  //       console.log(`Lives: ${lives}`);
-  //     const pacManLife = document.createElement('div');
-  //     pacManLife.classList.add('pac-man-lives');
-  //     ctnPacManLives.appendChild(pacManLife);    
-  // }
 }
 setInterval(extraLife, 500);
 // End Testing
@@ -653,29 +782,20 @@ function resetPacMan(){
   squares[pacmanCurrentIndex].classList.remove('pacMan-move-die');
   pacmanCurrentIndex = 658;
   squares[pacmanCurrentIndex].classList.add('pacMan');  
-   // setInterval(control, 200); 
-  // setInterval(speedStartPacMan);
   levelStart();
 }
 
 export function gameStart() {
-  // soundGhostSiren1.loop = false;
-  // soundGhostSiren1.pause();
-  // soundGhostSiren1.currentTime = 0;
+
   if(level === 0){
     soundGameStart.play();
       console.log(`soundGameStart.play(): level ${level}`);
   }
   
-  // clearInterval(toggleTittleAndScoreScreen);
-  // clearInterval(startToggleTittleAndScoreScreen);
   endToggleTitleAndScoreScreen();
   
   checkForHighScore();
-  // highScore = JSON.parse(localStorage.getItem("highScore"));
-  // Testing
-  // score = 9000;
-  //
+
   scoreDisplay.innerHTML = 0;
   levelStart();
   
@@ -683,19 +803,14 @@ export function gameStart() {
   pacmanCurrentIndex = 658;
   squares[pacmanCurrentIndex].classList.add('pacMan');
 
-  // Increment Level
-  // level = 9;
   level += 1;
-  // counterExtraLife = 1;
-  
-  // Set Level / Fruit Bonus
-  // ghostsEaten = 0;
   fruitBonusCurrent.length = 0;
   flagBonusLife = false;
   levelCurrent(level);
   
   setGameBoard();
   roundOutTheGameboard();
+  setTunnel();
 
   clearInterval(speedStartPacMan);
 
@@ -711,7 +826,11 @@ export function gameStart() {
 
 function clearFruitBonus1(){
   reSetLairTextColor("orange");
-  squares[433].innerHTML = '';
+  // squares[433].innerHTML = '';
+  if (!isNaN(Number(squares[433].innerHTML))) {
+    squares[433].innerHTML = '';
+  }
+
   // squares[433].style.color = 'orange';
   squares[489].classList.remove('bonusFruit');
     console.log('clearFruitBonus1');
@@ -721,7 +840,11 @@ function clearFruitBonus1(){
 
 function clearFruitBonus2(){
   reSetLairTextColor("orange");
-  squares[433].innerHTML = '';
+  // squares[433].innerHTML = '';
+  if (!isNaN(Number(squares[433].innerHTML))) {
+    squares[433].innerHTML = '';
+  }
+
   // squares[433].style.color = 'orange';
   squares[489].classList.remove('bonusFruit');
     console.log('clearFruitBonus2');
@@ -735,7 +858,8 @@ function launchFruitBonus1(){
     clearInterval(launchFruitBonus1);
       console.log(`clearInterval(launchFruitBonus1)`)
     squares[489].classList.add('bonusFruit');
-    squares[489].innerHTML = fruitBonus[level-1];
+    // squares[489].innerHTML = fruitBonus[level-1];
+    squares[489].innerHTML = fruitBonus[level-1 < fruitBonus.length ? level-1 : fruitBonus.length-1];
     setTimeout(clearFruitBonus1, 10000);
   }
   
@@ -747,8 +871,8 @@ function launchFruitBonus2(){
     clearInterval(launchFruitBonus2);
       console.log(`clearInterval(launchFruitBonus2)`)
     squares[489].classList.add('bonusFruit');
-    squares[489].innerHTML = fruitBonus[level-1];
-    // setTimeout(clearFruitBonus2, 10000);
+    // squares[489].innerHTML = fruitBonus[level-1];
+    squares[489].innerHTML = fruitBonus[level-1 < fruitBonus.length ? level-1 : fruitBonus.length-1];
     setTimeout(() => {
       clearFruitBonus2();
       switchToSiren2();
@@ -756,23 +880,12 @@ function launchFruitBonus2(){
   }
 }
 
-function clickStartGame() {
-  // setTitleScreen();
-  // resetGhostsSpeed();
-  
+function clickStartGame() {  
   if(level === 0){
     gameStart();
     joystickStart.style.backgroundColor = "orange";
     setTimeout(()=>{joystickStart.style.backgroundColor = "transparent"; }, 500); 
   }  
-  
-  // if(level !== 0) {
-  // setTitleScreen();
-  // level = 0;  
-  // clearInterval(speedStartPacMan);
-  // squares[pacmanCurrentIndex].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down');
-  // }
-
 }
 
 instructStartGame.addEventListener('click', clickStartGame);
@@ -858,8 +971,11 @@ export class Ghost {
     this.color = color;
     this.eyes = eyes;
     this.currentIndex = startIndex;
-    this.isScard = false;
+    this.previousIndex = startIndex;
+    this.isScared = false;
     this.timerId = NaN;
+    this.slowTick = 0;
+    this.hasReversed = false;
   }
 }
 
@@ -891,7 +1007,7 @@ export function resetGhosts(ghost) {
   ghosts.forEach(ghost => clearInterval(ghost.timerId));
   removeGhosts();
   
-  ghosts[0].currentIndex = 321; // blinky 
+  ghosts[0].currentIndex = 321;  // blinky 
   ghosts[1].currentIndex = 376; // inky
   ghosts[2].currentIndex = 377; // pinky
   ghosts[3].currentIndex = 378; // clyde
@@ -906,130 +1022,166 @@ export function resetGhostsSpeed(ghost) {
   ghosts[2].speed = 250; // pinky
   ghosts[3].speed = 300; // clyde  
 }
-  
-export function moveGhost(ghost) {
-  // Testing
-  // if(!ghost.isScared && squares[ghost.currentIndex].classList.contains('scaredBlink')) {
-  //    squares[ghost.currentIndex].classList.remove('scaredBlink');
-  //   // setTimeout(()=>{ squares[ghost.currentIndex].classList.add('scaredBlink'); }, 5000);
-  // }
 
-  // soundGhostSiren1.loop = true;
-  // soundGhostSiren1.play();
+function isIntersection(index) {
+  return intersectionIndices.includes(index);
+}
+
+export function moveGhost(ghost) {
   playSiren();
-  
-  const directions = [-1,1,28, -28];
-  let direction = directions[Math.floor(Math.random() * directions.length)];
+  // let previousIndex = ghost.currentIndex; 
+
+  const directions = [-1, 1, 28, -28];
+  // let direction = directions[Math.floor(Math.random() * directions.length)];
+  let direction = ghost.direction || directions[Math.floor(Math.random() * directions.length)];
   
   ghost.timerId = setInterval(function() {
-    if (
-    !squares[ghost.currentIndex + direction].classList.contains('ghost') &&
-    !squares[ghost.currentIndex + direction].classList.contains('lairText') &&
-    !squares[ghost.currentIndex + direction].classList.contains('wall') 
-    ) {
-      // Eye direction
-        if(direction === -1) {
-          squares[ghost.currentIndex].classList.remove(ghost.eyes);
-          ghost.eyes = `ghost-look-left-${eyeSize}`;
-        } else if (direction === 1) {
-          squares[ghost.currentIndex].classList.remove(ghost.eyes);
-          ghost.eyes = `ghost-look-right-${eyeSize}`;
-        } else if (direction === 28) {
-          squares[ghost.currentIndex].classList.remove(ghost.eyes);
-          ghost.eyes = `ghost-look-down-${eyeSize}`;
-        } else if (direction === -28) {
-          squares[ghost.currentIndex].classList.remove(ghost.eyes);
-          ghost.eyes = `ghost-look-up-${eyeSize}`;
-        }
-      
-      // Ghost hover over pellets and powerPellets    
-      if(squares[ghost.currentIndex + direction].classList.contains('pellet')) {
-          // console.log('pellet');
-          squares[ghost.currentIndex + direction].classList.remove('pellet');
-        squares[ghost.currentIndex].classList.remove(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes, 'scared', 'scaredBlink', 'ghost-large','ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large');
-        ghost.currentIndex += direction;
+    let foundValid = false;
+    let attempts = 0;
 
-          squares[ghost.currentIndex - direction].classList.add('pellet');
-        squares[ghost.currentIndex].classList.add(ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes);      
-      } else if(squares[ghost.currentIndex + direction].classList.contains('powerPellet')) {
-        console.log('powerPellet');
-         squares[ghost.currentIndex + direction].classList.remove('powerPellet');
-         squares[ghost.currentIndex].classList.remove(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes, 'scared', 'scaredBlink', 'ghost-large','ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large');
-         ghost.currentIndex += direction;
-
-          squares[ghost.currentIndex - direction].classList.add('powerPellet');
-         squares[ghost.currentIndex].classList.add(ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes); 
-      } else {
-        squares[ghost.currentIndex].classList.remove(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes, 'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large');
-        ghost.currentIndex += direction;
-
-        squares[ghost.currentIndex].classList.add(ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes);           
+    let shouldSlow = ghost.isScared || squares[ghost.currentIndex].classList.contains('tunnel');
+    if (shouldSlow) {
+      ghost.slowTick = (ghost.slowTick || 0) + 1;
+      if (ghost.slowTick < 2) {
+        // Hold position, don't move yet
+        return;
       }
-      // Choose new direction
+      ghost.slowTick = 0; // Reset after moving
     } else {
-      direction = directions[Math.floor(Math.random() * directions.length)];
-    }      
-     
-     if(ghost.isScared) {
+      ghost.slowTick = 0; // Reset if not slowed
+    }
+      if (ghost.isScared && !ghost.hasReversed) {
+        direction = -direction;
+        ghost.hasReversed = true;
+      }
+
+      if (isIntersection(ghost.currentIndex)) {
+      // Exclude reverse direction unless scared
+      const reverseDir = ghost.previousIndex - ghost.currentIndex;
+      let validDirections = directions.filter(dir => {
+        // if (!ghost.isScared && dir === reverseDir) return false;
+        if (dir === reverseDir) return false;
+        const nextIndex = ghost.currentIndex + dir;
+        return (
+          !squares[nextIndex].classList.contains('ghost') &&
+          !squares[nextIndex].classList.contains('lairText') &&
+          !squares[nextIndex].classList.contains('wall') &&
+          !(dir === 28 && squares[nextIndex].classList.contains('lairWall')) &&
+          (nextIndex !== 375) &&
+          (nextIndex !== 380)
+        );
+      });
+
+        if (validDirections.length === 0) {
+        validDirections = [reverseDir];
+        }
+        
+        if (validDirections.length > 0) {
+          direction = validDirections[Math.floor(Math.random() * validDirections.length)];
+          ghost.direction = direction;
+        }
+      }
+
+    while (!foundValid && attempts < directions.length) {
+      const nextIndex = ghost.currentIndex + direction;
+
+      if (
+        !squares[nextIndex].classList.contains('ghost') &&
+        !squares[nextIndex].classList.contains('lairText') &&
+        !squares[nextIndex].classList.contains('wall') &&
+        // Only block moving DOWN into a lairWall
+        !(direction === 28 && squares[nextIndex].classList.contains('lairWall')) &&
+        (nextIndex !== 375) &&
+        (nextIndex !== 380)
+      ) {
+        foundValid = true;
+      } else {
+        direction = directions[Math.floor(Math.random() * directions.length)];
+        attempts++;
+      }
+    }
+
+    if (foundValid) {
+      ghost.previousIndex = ghost.currentIndex;
+
+      // Eye direction
+      if (direction === -1) {
+        squares[ghost.currentIndex].classList.remove(ghost.eyes);
+        ghost.eyes = `ghost-look-left-${eyeSize}`;
+      } else if (direction === 1) {
+        squares[ghost.currentIndex].classList.remove(ghost.eyes);
+        ghost.eyes = `ghost-look-right-${eyeSize}`;
+      } else if (direction === 28) {
+        squares[ghost.currentIndex].classList.remove(ghost.eyes);
+        ghost.eyes = `ghost-look-down-${eyeSize}`;
+      } else if (direction === -28) {
+        squares[ghost.currentIndex].classList.remove(ghost.eyes);
+        ghost.eyes = `ghost-look-up-${eyeSize}`;
+      }
+
+      // Calculate next index
+      const nextIndex = ghost.currentIndex + direction;
+
+      // Remove pellet/powerPellet class from the new square if needed
+      if (pelletState[nextIndex] === 'pellet') {
+        squares[nextIndex].classList.remove('pellet');
+      }
+      if (pelletState[nextIndex] === 'powerPellet') {
+        squares[nextIndex].classList.remove('powerPellet');
+      }
+
+      // Restore pellet/powerPellet class to the previous square if needed
+      // squares[ghost.currentIndex].classList.remove('pellet', 'powerPellet');
+      // if (pelletState[ghost.currentIndex] === 'pellet') {
+      //   squares[ghost.currentIndex].classList.add('pellet');
+      // }
+      // if (pelletState[ghost.currentIndex] === 'powerPellet') {
+      //   squares[ghost.currentIndex].classList.add('powerPellet');
+      // }
+
+      // Remove ghost from current square
+      squares[ghost.currentIndex].classList.remove(
+        ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes,
+        'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large',
+        'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large'
+      );
+
+      // Tunnel wrap for ghosts
+      if (direction === 1 && ghost.currentIndex === 418) {
+        ghost.currentIndex = 391;
+      } else if (direction === -1 && ghost.currentIndex === 393) {
+        ghost.currentIndex = 420;
+      } else {
+        ghost.currentIndex = nextIndex;
+      }
+
+      // Remove pellet/powerPellet class from the new square if needed
+      squares[ghost.currentIndex].classList.remove('pellet', 'powerPellet');
+
+      // Add ghost to new square
+      squares[ghost.currentIndex].classList.add(
+        ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes
+      );
+    }
+    // If no valid move, ghost stays in place this tick
+
+    if (ghost.isScared) {
       soundGhostSiren1.pause();
       soundGhostSiren1.currentTime = 0;
 
-       // Change ghost direction when scared
-       if(direction === 1 ) { direction = -1 };
-       if(direction === -1 ) { direction = 1 }; 
-       if(direction === 28 ) { direction = -28 };  
-       if(direction === -28 ) { direction = 28 };  
-      
-        squares[ghost.currentIndex].classList.add('scared');
-       
-        setTimeout(()=>{ squares[ghost.currentIndex].classList.add('scaredBlink'); }, 8000);
-        // setTimeout(()=>{ squares[ghost.currentIndex].classList.add('scaredBlink'); }, 5000);
-        // setTimeout(()=>{ squares[ghost.currentIndex].classList.remove('scaredBlink'); }, 5001);
-      
-      /// Testing
-      // ghosts.forEach(ghost => clearInterval(ghost.timerId));
-      // ghosts.forEach(ghost => ghost.speed = 400);
-        // ghosts[0].speed = 300; // blinky 
-        // ghosts[1].speed = 300; // inky
-        // ghosts[2].speed = 300; // pinky
-        // ghosts[3].speed = 300; // clyde  
-           // console.log(`ghosts[0].speed: ${ghosts[0].speed}`);
-           // console.log(`ghosts[1].speed: ${ghosts[1].speed}`);
-           // console.log(`ghosts[2].speed: ${ghosts[2].speed}`);
-           // console.log(`ghosts[3].speed: ${ghosts[3].speed}`);
+      // Change ghost direction when scared
+      // if (direction === 1) { direction = -1; }
+      // if (direction === -1) { direction = 1; }
+      // if (direction === 28) { direction = -28; }
+      // if (direction === -28) { direction = 28; }
 
-        // removeGhosts();
-        // startGhosts();
-        // moveGhost(ghost);
-       
-     } // if(ghost.isScared)
-    
-    if(ghost.isScared && squares[ghost.currentIndex].classList.contains('pacMan')) {
-      reSetLairTextColor("whitesmoke");
-      playGhostEatenSounds();
-
-      ghostsEaten += 1;
-      score += ghostsEaten * 400;
-        console.log(`ghostsEaten score: ${ghostsEaten * 400}`);
-      // squares[433].style.color = 'whitesmoke';
-
-      squares[433].innerHTML = ghostsEaten * 400;
-      setTimeout(()=>{squares[433].innerHTML = ''; }, 5000);      
-      // Set blinky to respawn inside the lair
-      if(squares[ghost.currentIndex].classList.contains('blinky')) {
-          squares[ghost.currentIndex].classList.remove(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes, 'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large');
-          ghost.currentIndex = 380;
-      } else {
-          squares[ghost.currentIndex].classList.remove(ghost.className,'ghost', ghost.size, ghost.color, ghost.eyes, 'scared', 'scaredBlink', 'ghost-large', 'ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large');
-          ghost.currentIndex = ghost.startIndex;  
-      }  
-      squares[ghost.currentIndex].classList.add(ghost.className, 'ghost', ghost.size, ghost.color, ghost.eyes);  
-      // reSetLairTextColor();     
+      squares[ghost.currentIndex].classList.add('scared');
+      // setTimeout(() => { squares[ghost.currentIndex].classList.add('scaredBlink'); }, pelletDuration - 1000);
+      setTimeout(() => { squares[ghost.currentIndex].classList.add('scaredBlink'); }, currentPelletDuration - 1000);
     }
+    syncPelletClasses();
     checkForGhostCatchesPacMan();
-    // checkForHighScore();
-      console.log(`ghosts[0].speed: ${ghosts[0].speed}`);
- }, ghost.speed); 
+  }, ghost.speed);
 }
 
 export function unScareGhosts() {
@@ -1039,20 +1191,11 @@ export function unScareGhosts() {
     playSiren();
   }
 
- ghosts.forEach(ghost => ghost.isScared = false);
-
-  // for(let i = 0; i < squares.length; i++) {
-  //   squares[i].classList.remove('scaredBlink');
-  //   squares[i].classList.remove('pacMan');
-  // }  
-  
- // ghosts.forEach(ghost => {
- //   ghosts.forEach(ghost => ghost.isScared = false);
-    // squares[ghost.currentIndex].classList.remove('scaredBlink');
- //   setTimeout(()=>{ squares[ghost.currentIndex].classList.remove('scaredBlink'); }, 5500);
-  // })
+ ghosts.forEach(ghost => {
+  ghost.isScared = false;
+  ghost.hasReversed = false;
+});
   
  ghostsEaten = 0;
-  //
  // resetGhostsSpeed(); // Check  level changes
 }

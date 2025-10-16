@@ -1,6 +1,20 @@
 import { levelComplete, counterPelet, fruitBonus, fruitBonusValue, resetGhosts, removeGhosts, startGhosts, eyeSize, ghostSize, Ghost, ghosts, checkForHighScore } from './helper-functions.js';
 export const squares = [];
 export const gameGrid = document.getElementById("game-grid");
+export const pelletState = [];
+export const intersectionIndices = [
+    34, 49,
+    141, 146, 149, 152, 155, 158, 161, 166,
+    230, 245,
+    320, 323,
+    377, 378,
+    398, 401, 410, 413,
+    485, 494,
+    566, 569, 578, 581,
+    650, 653, 656, 659, 662, 665,
+    731, 752,
+    824, 827
+];
 
   const overlayArray = [
       1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -110,7 +124,12 @@ export function buildTheBoard() {
     let div = document.createElement("div");
     gameGrid.appendChild(div);  
     squares.push(div);
-     squares[i].classList.add('game-board-square');      
+     squares[i].classList.add('game-board-square');  
+
+        if (intersectionIndices.includes(i)) {
+        squares[i].classList.add('intersection');
+        }    
+     
   }    
 }
 
@@ -172,6 +191,20 @@ export function reSetLairTextColor(color = "black") {
   });
 }
 
+export function setTunnel() {
+    squares[392].classList.add('tunnel');
+    squares[393].classList.add('tunnel');
+    squares[394].classList.add('tunnel');
+    squares[395].classList.add('tunnel');
+    squares[396].classList.add('tunnel');
+
+    squares[415].classList.add('tunnel');
+    squares[416].classList.add('tunnel');
+    squares[417].classList.add('tunnel');
+    squares[418].classList.add('tunnel');
+    squares[419].classList.add('tunnel');
+}
+
 export function setLairText() {
      // 
     reSetLairTextColor();
@@ -208,7 +241,7 @@ export function setTitleScreen() {
    
      squares[i].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down','blank', 'wall', 'powerPellet', 'pellet', 'ghost', 'ghost-small','ghost-large', 'ghost-look-left', 'ghost-look-up', 'ghost-look-down', 'ghost-look-right',
                                 'blinky', 'pinky', 'inky', 'clyde', 'lairWall', 'bonusFruit', 'roundBottomLeft', 'roundBottomRight',
-                               'roundTopLeft', 'roundTopRight', 'level-completed');  
+                               'roundTopLeft', 'roundTopRight', 'level-completed.', 'tunnel');  
    
     squares[i].style.color = 'whitesmoke';
    
@@ -337,7 +370,7 @@ export function setScoreScreen() {
    
    squares[i].classList.remove('pacMan', 'pacMan-move-left', 'pacMan-move-right', 'pacMan-move-up', 'pacMan-move-down','blank', 'wall', 'powerPellet', 'pellet', 'ghost', 'ghost-small','ghost-large', 'ghost-look-left', 'ghost-look-up', 'ghost-look-down', 'ghost-look-right',
                                'blinky', 'pinky', 'inky', 'clyde', 'lairWall', 'bonusFruit', 'roundBottomLeft', 'roundBottomRight',
-                               'roundTopLeft', 'roundTopRight', 'level-completed');  
+                               'roundTopLeft', 'roundTopRight', 'level-completed', 'tunnel');  
 
    squares[i].style.color = 'whitesmoke';
    
@@ -468,6 +501,38 @@ export function setScoreScreen() {
     squares[805].innerHTML = "!";  
 } // setScoreScreen
 
+export function addBlinkToPressStart() {    
+    squares[793].classList.add('blink');
+    squares[794].classList.add('blink');
+    squares[795].classList.add('blink');
+    squares[796].classList.add('blink');
+    squares[797].classList.add('blink');
+    squares[798].classList.add('blink');
+
+    squares[800].classList.add('blink');
+    squares[801].classList.add('blink');
+    squares[802].classList.add('blink');
+    squares[803].classList.add('blink');
+    squares[804].classList.add('blink');
+    squares[805].classList.add('blink');    
+}
+
+export function removeBlinkFromPressStart() {
+    squares[793].classList.remove('blink');
+    squares[794].classList.remove('blink');
+    squares[795].classList.remove('blink');
+    squares[796].classList.remove('blink');
+    squares[797].classList.remove('blink');
+    squares[798].classList.remove('blink');
+
+    squares[800].classList.remove('blink');
+    squares[801].classList.remove('blink');
+    squares[802].classList.remove('blink');
+    squares[803].classList.remove('blink');
+    squares[804].classList.remove('blink');
+    squares[805].classList.remove('blink');
+}
+
 export function setGameBoard() { 
     reSetLairTextColor();
     for(let i = 0; i < squares.length; i++) {
@@ -477,7 +542,7 @@ export function setGameBoard() {
                                'roundTopLeft', 'roundTopRight', 'level-completed', 
                                 'ghost-look-up-small', 'ghost-look-down-small', 'ghost-look-left-small', 'ghost-look-right-small', 
                                 'ghost-look-up-large', 'ghost-look-down-large', 'ghost-look-left-large', 'ghost-look-right-large', 
-                                'ghost-small', 'ghost-large', 'ghost-red', 'ghost-pink', 'ghost-blue', 'ghost-orange');
+                                'ghost-small', 'ghost-large', 'ghost-red', 'ghost-pink', 'ghost-blue', 'ghost-orange', 'tunnel');
           // squares[i].classList.add('game-board-square');      
     squares[i].innerHTML = '';
     squares[i].style.color = 'orange';
@@ -489,13 +554,6 @@ export function setGameBoard() {
               squares[i].classList.add('wall');
               // squares[i].classList.add('level-completed');
           }
-          if(overlayArray[i] === 2) {
-              squares[i].classList.add('powerPellet');
-          }
-          if(overlayArray[i] === 3) {
-              squares[i].classList.add('pellet');
-          }
-
           if(overlayArray[i] === 8) {
               squares[i].classList.add('pacMan');
               squares[i].classList.add('pacMan-move-left');
@@ -503,9 +561,21 @@ export function setGameBoard() {
           if(overlayArray[i] === 9) {
               squares[i].classList.add('lairWall');
           } 
+
+          // Pellet state logic (only one of these will be true per square)
           if(overlayArray[i] === 10) {
               squares[i].classList.add('bonusFruit');
-          }                                                  
+          } 
+          
+          if(overlayArray[i] === 2) {
+              squares[i].classList.add('powerPellet');
+              pelletState[i] = 'powerPellet'; // Track state
+          } else if(overlayArray[i] === 3) {
+              squares[i].classList.add('pellet');
+              pelletState[i] = 'pellet'; // Track state
+          } else {
+              pelletState[i] = null; // Track state
+          }
 
   } // add ghosts
   // startGhosts();
@@ -514,10 +584,17 @@ export function setGameBoard() {
   // ghosts.forEach(ghost => moveGhost(ghost));
  } // setGameBoard
 
+function addIntersections() {
+    intersectionIndices.forEach(idx => {
+        squares[idx].classList.add('intersection');
+    });
+}
+
 export function buildGameBoard(){
   buildTheBoard();
   setGameBoard();
   roundOutTheGameboard();
+addIntersections();
   // setLairText();
 } // function buildGameBoard
 

@@ -1148,9 +1148,9 @@ export function moveGhost(ghost) {
 
       // Tunnel wrap for ghosts
       if (direction === 1 && ghost.currentIndex === 418) {
-        ghost.currentIndex = 391;
+          ghost.currentIndex = 393;
       } else if (direction === -1 && ghost.currentIndex === 393) {
-        ghost.currentIndex = 420;
+          ghost.currentIndex = 418;
       } else {
         ghost.currentIndex = nextIndex;
       }

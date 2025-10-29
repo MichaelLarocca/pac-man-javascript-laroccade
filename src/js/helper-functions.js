@@ -7,6 +7,7 @@ export let highScore;
 
 let timerPowerPellet;
 let currentPelletDuration = 9000;
+let fruitBonusIntervalId;
 
 if(JSON.parse(localStorage.getItem("highScore")) !== null) {
     highScore = JSON.parse(localStorage.getItem("highScore"));  
@@ -27,7 +28,7 @@ let lives = 3;
 
 export let counterPelet = 0;
 
-let fruitEaten = false;
+// let fruitEaten = false;
 let ghostsEaten = 0;
 
 const ctnGame = document.getElementById('ctn-game');
@@ -387,13 +388,30 @@ export function control(x) {
       });
         timerPowerPellet = setTimeout(unScareGhosts, pelletDuration);
     }
-    if(squares[pacmanCurrentIndex].classList.contains('bonusFruit')) {
-      squares[pacmanCurrentIndex].classList.remove('bonusFruit');
-      if(fruitEaten === false){
-         fruitScoreBonus();
-      }
-    }
-  
+    // if(squares[pacmanCurrentIndex].classList.contains('bonusFruit')) {
+    //   squares[pacmanCurrentIndex].classList.remove('bonusFruit');
+    //   if(fruitEaten === false){
+    //      fruitScoreBonus();
+    //   }
+    // }
+        if (
+          fruitBonusState.present &&
+          (
+            pacmanCurrentIndex === fruitBonusState.index ||
+            (pacmanPreviousIndex === fruitBonusState.index && pacmanCurrentIndex !== pacmanPreviousIndex)
+          )
+        ) {
+          squares[fruitBonusState.index].classList.remove('bonusFruit');
+          squares[fruitBonusState.index].innerHTML = '';
+          fruitBonusState.present = false;
+          fruitBonusState.eaten = true;
+          score += fruitBonusState.value;
+          soundPacManEatingFruit.play();
+          reSetLairTextColor("whitesmoke");
+          squares[433].innerHTML = fruitBonusState.value;
+          setTimeout(() => { squares[433].innerHTML = ''; }, 5000);
+        }
+
     checkForHighScore();
   
     squares[pacmanCurrentIndex].classList.add('pacMan');
@@ -407,28 +425,28 @@ export function control(x) {
    syncPelletClasses();
   } // control
 
-function fruitScoreBonus(){
-  reSetLairTextColor("whitesmoke");
-  soundPacManEatingFruit.play();
-  if(level < 12) {
-    score += fruitBonusValue[level-1];
-    // squares[433].style.color = 'whitesmoke';
-    squares[433].innerHTML = fruitBonusValue[level-1];
-      // console.log(`Fruit Eaten! ${fruitBonusValue[level-1]}`);
-    fruitEaten = true;
-    squares[pacmanCurrentIndex].classList.remove('bonusFruit');
-    squares[489].innerHTML = '';  
-  } else {
-    score += fruitBonusValue[fruitBonusValue.length-1];
-    // squares[433].style.color = 'whitesmoke';
-    squares[433].innerHTML = fruitBonusValue[fruitBonus.length-1];
-      // console.log(`Fruit Eaten! ${fruitBonusValue[level-1]}`);
-    fruitEaten = true;
-    squares[pacmanCurrentIndex].classList.remove('bonusFruit');
-    squares[489].innerHTML = '';      
-  }
-  // reSetLairTextColor(); 
-}
+// function fruitScoreBonus(){
+//   reSetLairTextColor("whitesmoke");
+//   soundPacManEatingFruit.play();
+//   if(level < 12) {
+//     score += fruitBonusValue[level-1];
+//     // squares[433].style.color = 'whitesmoke';
+//     squares[433].innerHTML = fruitBonusValue[level-1];
+//       // console.log(`Fruit Eaten! ${fruitBonusValue[level-1]}`);
+//     fruitEaten = true;
+//     squares[pacmanCurrentIndex].classList.remove('bonusFruit');
+//     squares[489].innerHTML = '';  
+//   } else {
+//     score += fruitBonusValue[fruitBonusValue.length-1];
+//     // squares[433].style.color = 'whitesmoke';
+//     squares[433].innerHTML = fruitBonusValue[fruitBonus.length-1];
+//       // console.log(`Fruit Eaten! ${fruitBonusValue[level-1]}`);
+//     fruitEaten = true;
+//     squares[pacmanCurrentIndex].classList.remove('bonusFruit');
+//     squares[489].innerHTML = '';      
+//   }
+//   // reSetLairTextColor(); 
+// }
 
 // Fruit Score
 export let level = 0;
@@ -595,6 +613,15 @@ export function checkForGhostCatchesPacMan() {
   });
 }
 
+let fruitBonusState = {
+  index: 489,         // Where fruit appears
+  emoji: null,        // Current fruit emoji
+  value: null,        // Current fruit score value
+  present: false,     // Is fruit on the board?
+  eaten: false,       // Has fruit been eaten?
+  timerId: null       // Timeout for fruit disappearance
+};
+
 // Function to animate PacMan dying
 export function animatePacManDying() {
     squares[pacmanCurrentIndex].classList.add('pacMan-move-die');
@@ -613,11 +640,13 @@ export function animatePacManDying() {
 }
 
 export function loseLife(){
+  if (fruitBonusIntervalId) clearInterval(fruitBonusIntervalId);
+
   stopAllSounds();
   soundDeath.play();
   lives -= 1;
-  clearInterval(launchFruitBonus1);
-  clearInterval(launchFruitBonus2);
+  // clearInterval(launchFruitBonus1);
+  // clearInterval(launchFruitBonus2);
   squares[489].classList.remove('bonusFruit');
   squares[489].innerHTML = '';
   
@@ -703,6 +732,7 @@ setInterval(extraLife, 500);
 // End Testing
 
 function resetGame(){
+  if (fruitBonusIntervalId) clearInterval(fruitBonusIntervalId);
   // scoreDisplay.innerHTML = 0;
   checkForHighScore();
   // highScore = JSON.parse(localStorage.getItem("highScore"));
@@ -710,7 +740,7 @@ function resetGame(){
   level = 0;
   lives = 3;
   counterPelet = 0;
-  fruitEaten = false;
+  // fruitEaten = false;
   flagBonusLife = false;
   counterExtraLife = 1;
   pacManSpeed = 200;
@@ -787,6 +817,9 @@ function resetPacMan(){
 
 export function gameStart() {
 
+  if (fruitBonusIntervalId) clearInterval(fruitBonusIntervalId);
+  fruitBonusIntervalId = setInterval(() => launchFruitBonus(level, counterPelet), 100);
+
   if(level === 0){
     soundGameStart.play();
       console.log(`soundGameStart.play(): level ${level}`);
@@ -820,64 +853,95 @@ export function gameStart() {
   resizeCurrentPacManLives();
   
   
-  setInterval(launchFruitBonus1,100);
-  setInterval(launchFruitBonus2,100); 
+  // setInterval(launchFruitBonus1,100);
+  // setInterval(launchFruitBonus2,100); 
+  setInterval(() => launchFruitBonus(level, counterPelet), 100);
 }
 
-function clearFruitBonus1(){
-  reSetLairTextColor("orange");
-  // squares[433].innerHTML = '';
-  if (!isNaN(Number(squares[433].innerHTML))) {
-    squares[433].innerHTML = '';
-  }
+// function clearFruitBonus1(){
+//   reSetLairTextColor("orange");
+//   // squares[433].innerHTML = '';
+//   if (!isNaN(Number(squares[433].innerHTML))) {
+//     squares[433].innerHTML = '';
+//   }
 
-  // squares[433].style.color = 'orange';
-  squares[489].classList.remove('bonusFruit');
-    console.log('clearFruitBonus1');
-  squares[489].innerHTML = '';
-  fruitEaten = false;
-}
+//   // squares[433].style.color = 'orange';
+//   squares[489].classList.remove('bonusFruit');
+//     console.log('clearFruitBonus1');
+//   squares[489].innerHTML = '';
+//   fruitEaten = false;
+// }
 
-function clearFruitBonus2(){
-  reSetLairTextColor("orange");
-  // squares[433].innerHTML = '';
-  if (!isNaN(Number(squares[433].innerHTML))) {
-    squares[433].innerHTML = '';
-  }
+// function clearFruitBonus2(){
+//   reSetLairTextColor("orange");
+//   // squares[433].innerHTML = '';
+//   if (!isNaN(Number(squares[433].innerHTML))) {
+//     squares[433].innerHTML = '';
+//   }
 
-  // squares[433].style.color = 'orange';
-  squares[489].classList.remove('bonusFruit');
-    console.log('clearFruitBonus2');
-  squares[489].innerHTML = '';
-  fruitEaten = false;
-}
+//   // squares[433].style.color = 'orange';
+//   squares[489].classList.remove('bonusFruit');
+//     console.log('clearFruitBonus2');
+//   squares[489].innerHTML = '';
+//   fruitEaten = false;
+// }
 
-function launchFruitBonus1(){
+// function launchFruitBonus1(){
   
-  if(counterPelet === 70 && fruitEaten === false){
-    clearInterval(launchFruitBonus1);
-      console.log(`clearInterval(launchFruitBonus1)`)
-    squares[489].classList.add('bonusFruit');
-    // squares[489].innerHTML = fruitBonus[level-1];
-    squares[489].innerHTML = fruitBonus[level-1 < fruitBonus.length ? level-1 : fruitBonus.length-1];
-    setTimeout(clearFruitBonus1, 10000);
-  }
+//   if(counterPelet === 70 && fruitEaten === false){
+//     clearInterval(launchFruitBonus1);
+//       console.log(`clearInterval(launchFruitBonus1)`)
+//     squares[489].classList.add('bonusFruit');
+//     // squares[489].innerHTML = fruitBonus[level-1];
+//     squares[489].innerHTML = fruitBonus[level-1 < fruitBonus.length ? level-1 : fruitBonus.length-1];
+//     setTimeout(clearFruitBonus1, 10000);
+//   }
   
-}
+// }
 
-function launchFruitBonus2(){
+// function launchFruitBonus2(){
   
-  if(counterPelet === 170 && fruitEaten === false){
-    clearInterval(launchFruitBonus2);
-      console.log(`clearInterval(launchFruitBonus2)`)
-    squares[489].classList.add('bonusFruit');
-    // squares[489].innerHTML = fruitBonus[level-1];
-    squares[489].innerHTML = fruitBonus[level-1 < fruitBonus.length ? level-1 : fruitBonus.length-1];
-    setTimeout(() => {
-      clearFruitBonus2();
-      switchToSiren2();
+//   if(counterPelet === 170 && fruitEaten === false){
+//     clearInterval(launchFruitBonus2);
+//       console.log(`clearInterval(launchFruitBonus2)`)
+//     squares[489].classList.add('bonusFruit');
+//     // squares[489].innerHTML = fruitBonus[level-1];
+//     squares[489].innerHTML = fruitBonus[level-1 < fruitBonus.length ? level-1 : fruitBonus.length-1];
+//     setTimeout(() => {
+//       clearFruitBonus2();
+//       switchToSiren2();
+//     }, 10000);
+//   }
+// }
+
+function launchFruitBonus(level, pelletCount) {
+  // Only launch if not already present or eaten
+  if (
+    !fruitBonusState.present &&
+    !fruitBonusState.eaten &&
+    (pelletCount === 70 || pelletCount === 170)
+  ) {
+    fruitBonusState.emoji = fruitBonus[level-1 < fruitBonus.length ? level-1 : fruitBonus.length-1];
+    fruitBonusState.value = fruitBonusValue[level-1 < fruitBonusValue.length ? level-1 : fruitBonusValue.length-1];
+    fruitBonusState.present = true;
+    fruitBonusState.eaten = false;
+
+    squares[fruitBonusState.index].classList.add('bonusFruit');
+    squares[fruitBonusState.index].innerHTML = fruitBonusState.emoji;
+
+    // Set timer to clear fruit
+    fruitBonusState.timerId = setTimeout(() => {
+      clearFruitBonus();
     }, 10000);
   }
+}
+
+function clearFruitBonus() {
+  squares[fruitBonusState.index].classList.remove('bonusFruit');
+  squares[fruitBonusState.index].innerHTML = '';
+  fruitBonusState.present = false;
+  fruitBonusState.eaten = false;
+  fruitBonusState.timerId = null;
 }
 
 function clickStartGame() {  
@@ -916,6 +980,7 @@ export function removePacMan() {
 }
 
 export function levelComplete() {
+  if (fruitBonusIntervalId) clearInterval(fruitBonusIntervalId);
 
   stopAllSounds();
      // Code for Level Complete

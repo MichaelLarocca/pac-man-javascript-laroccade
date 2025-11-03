@@ -9,98 +9,99 @@ See README.md for full disclaimer and licensing details.
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/icon-pacman.png" />
-    <!-- <link rel="stylesheet" href="/css/main.processed.css" /> -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous" />
     <title>Pac-Man</title>
   </head>
   <body>
-    <div id="app">
+    <div id="app"> <!-- Main app container -->
+      <div id="ctn-game"> <!-- Game container: holds all game sections -->
 
-    <div id="ctn-game">    
-        <div id="instructions">
-        <p><h3>Instructions</h3></p>
-        <p>Use arrow keys to control Pac-Man.</p> 
-        <p>Eat the Pac-Dot's, Power Pellets, and fruits to score points.</p>   
-        <p>Watch out for the ghosts!</p>   
-    <!--     <p>___________</p> -->
-      
-        <p id="instruct">Press: "S" or <i id="instruct-start-game" class="fas fa-male"></i> to START</p>
-      </div>
-      
-      <div id="credits">
-        <p><h3>Scrimba</h3></p>
-        <p>This Project is based on Scrimba's Pac-Man game project.</p> 
-        <p>By: Ania Kubow</p>   
-      </div>  
-      
-      <div id="section-middle">
-      <div id="ctn-section-1">    
-        <div id="title">
-                  <div id="marquee-border">
-                  <div id="marquee">
-                      <h1>PAC - MAN</h1>
-                  </div>  
-      <!--    </div> title /            -->
-                  <div id="toggle" class="toggle">
-                    <p>Toggle full screen:</p>
-                      <p id="lightenText" class="toggle-text">On</p>
-                      <div id="toggleBtn" class="toggle-btn">
-                          <div id="inner-circle" class="inner-circle inner-circle-pac-man-right"></div>
-                      </div>
-                      <p id="darkenText" class="toggle-text unselected">Off</p>
-                  </div>
-              </div>
-        </div> <!-- title -->
-        <div id="score-top" class="score-top">
-          <h3 id="score-display-fs">Score: <span id="score-display"></span></h3>
-          <h3 id="high-score-display-fs">High Score: <span id="high-score-display"></span></h3>
+        <div id="instructions"> <!-- Instructions section: displays game instructions to the player -->
+          <h3>Instructions</h3>
+          <p>Use arrow keys to control Pac-Man.</p>
+          <p>Eat the Pac-Dot's, Power Pellets, and fruits to score points.</p>
+          <p>Watch out for the ghosts!</p>
+          <p id="instruct"> <!-- Optional separator for instructions -->
+            Press: "S" or <i id="instruct-start-game" class="fas fa-male"></i> to START
+          </p>
         </div>
-      </div> <!-- ctn-section-1 --> 
-      <div id="ctn-section-2">
-      <div id="game-grid"></div>
-        </div> <!-- ctn-section-2 -->
-      <div id="ctn-section-3">
-        <div id="ctn-level-bottom" class="ctn-level-bottom">
-          <h4 id="ctn-pac-man-lives"></h4>   
-          <h4 id="level-bottom"></h4>
-        </div>  
-      
-        <div id="controller">
-    <!--       <p>Controller</p>   -->
-          
-          <div id="control-board-upper">
 
-            <div id="control-left-logo"><br /><span id="control-left-logo-games"></span></div>
-            <div id="control-middle-joy-stick">
-              <div></div>
-              <div id="joystick-up"><i class="fas fa-arrow-up"></i></div>
-              <div></div>
-              <div id="joystick-left"><i class="fas fa-arrow-left"></i></div>
-              <div></div>
-              <div id="joystick-right"><i class="fas fa-arrow-right"></i></div>
-              <div></div>
-              <div id="joystick-down"><i class="fas fa-arrow-down"></i></div>
-              <div></div>
+        <div id="credits"> <!-- Credits section: attribution for project inspiration -->
+          <h3>Scrimba</h3>
+          <p>This Project is based on Scrimba's Pac-Man game project.</p>
+          <p>By: Ania Kubow</p>
+        </div>
+
+        <div id="section-middle"> <!-- Main game sections container -->
+
+          <div id="ctn-section-1"> <!-- Section 1: Title and score display -->
+            <div id="title"> <!-- title: marquee and fullscreen toggle controls -->
+              <div id="marquee-border">
+                <div id="marquee">
+                  <h1>PAC - MAN</h1>
+                </div>
+                <div id="toggle" class="toggle"> <!-- Toggle controls for full screen mode -->
+                  <p>Toggle full screen:</p>
+                  <p id="lightenText" class="toggle-text">On</p>
+                  <div id="toggleBtn" class="toggle-btn">
+                    <div id="inner-circle" class="inner-circle inner-circle-pac-man-right"></div>
+                  </div>
+                  <p id="darkenText" class="toggle-text unselected">Off</p>
+                </div>
+              </div>
+            </div> <!-- close title -->
+            <div id="score-top" class="score-top"> <!-- Score display section -->
+              <h3 id="score-display-fs">
+                Score: <span id="score-display"></span>
+              </h3>
+              <h3 id="high-score-display-fs">
+                High Score: <span id="high-score-display"></span>
+              </h3>
             </div>
-            <div id="control-right">
-              <div id="control-board-button-1"><i id="player-1-start" class="fas fa-male"></i></div>
-            </div>
+          </div><!-- close ctn-section-1 -->
 
-          </div>
+          <div id="ctn-section-2"> <!-- Section 2: Game grid where Pac-Man and ghosts move -->
+            <div id="game-grid"></div>
+          </div><!-- close ctn-section-2 -->
 
-          </div>           
-          </div>        
+          <div id="ctn-section-3"> <!-- Section 3: Level info and controller UI -->
+            <div id="ctn-level-bottom" class="ctn-level-bottom"> <!-- Level and lives display -->
+              <h4 id="ctn-pac-man-lives"></h4>
+              <h4 id="level-bottom"></h4>
+            </div> 
+            <div id="controller"> <!--controller: on-screen controls for Pac-Man movement -->
+              <div id="control-board-upper">
+                <div id="control-left-logo"> <!-- Left logo area (can show game icons or info) -->
+                  <br />
+                  <span id="control-left-logo-games"></span>
+                </div>
+                <div id="control-middle-joy-stick"> <!-- Middle joystick controls -->
+                  <div></div>
+                  <div id="joystick-up"><i class="fas fa-arrow-up"></i></div>
+                  <div></div>
+                  <div id="joystick-left"><i class="fas fa-arrow-left"></i></div>
+                  <div></div>
+                  <div id="joystick-right"><i class="fas fa-arrow-right"></i></div>
+                  <div></div>
+                  <div id="joystick-down"><i class="fas fa-arrow-down"></i></div>
+                  <div></div>
+                </div> 
+                <div id="control-right"> <!-- Right side: start button for player 1 -->
+                  <div id="control-board-button-1">
+                    <i id="player-1-start" class="fas fa-male"></i>
+                  </div>
+                </div>
+              </div>
+            </div><!-- close controller -->
+          </div><!-- close ctn-section-3 -->
 
-        </div> <!--controller -->
-      </div> <!-- ctn-section-3 -->  
-      
-      
-    </div> <!--section-middle-->
+        </div><!-- close section-middle -->
 
-    </div> <!--ctn-game-->
+      </div><!-- close ctn-game -->
 
-    </div> <!-- id="app" -->
-    <script type="module" src="/src/main.js"></script>
+    </div><!-- close id="app" -->
+
+    <script type="module" src="/src/main.js"></script> <!-- Main JavaScript entry point -->
   </body>
 </html>

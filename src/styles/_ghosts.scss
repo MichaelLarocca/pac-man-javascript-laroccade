@@ -75,7 +75,6 @@ body {
   height: 1.5px;
   position: absolute;
   bottom: 6.25px;
-  // margin: 0 0 0 2.5px;
   margin: 0 0 0 2.0px;
 }
 
@@ -88,7 +87,6 @@ body {
   height: 1.5px;
   position: absolute;
   bottom: 6.25px;
-  // margin: 0 0 0 5px;
   margin: 0 0 0 5px;
 }
 
@@ -111,7 +109,6 @@ body {
   height: 1.5px;
   position: absolute;
   bottom: 3.75px;
-  // margin: 0 0 0 2.5px;
   margin: 0 0 0 2.5px;
 }
 
@@ -124,7 +121,6 @@ body {
   height: 1.5px;
   position: absolute;
   bottom: 3.75px;
-  // margin: 0 0 0 5px;
   margin: 0 0 0 5px;
 }
 
@@ -379,7 +375,6 @@ body {
 
 .scaredBlink {
   animation: scaredBlink .01s 1;
-  // animation-delay: 500ms;
 }
 
 @keyframes scaredBlink {

@@ -5,31 +5,20 @@
   flex-wrap: wrap;
   min-width: var(--game-grid-min-width-small);
   max-width: var(--game-grid-max-width-small);
-  
-  // min-width: var(--game-grid-min-width-large);
-  // max-width: var(--game-grid-max-width-large);
-  
   border: solid #111 3px;
   color: orange;
   margin: 0 auto;
 }
 
 #game-grid div {
-  // border: 1px solid whitesmoke;
   height: var(--game-grid-div-height-small);
   width: var(--game-grid-div-width-small);
-  //  background-color: red;
-  // height: var(--game-grid-div-height-large);
-  // width: var(--game-grid-div-width-large);
 }
 
 .game-board-square {
   border: 1px solid black;
   height: var(--game-grid-div-height-small);
   width: var(--game-grid-div-width-small);
-  // background-color: red;
-//   height: var(--game-grid-div-height-large);
-//   width: var(--game-grid-div-width-large); 
 }
 
 .wall {

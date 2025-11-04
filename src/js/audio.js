@@ -52,30 +52,30 @@ export function stopAllSounds() {
 	  sound.pause();
 	  sound.currentTime = 0; // Reset playback to the beginning
 	});
-  }
+}
 
-  export function playGhostEatenSounds() {
-	soundEatingGhost.pause();
-	soundEatingGhost.currentTime = 0;
-	soundGhostRunningAway.pause();
-	soundGhostRunningAway.currentTime = 0;
+export function playGhostEatenSounds() {
+soundEatingGhost.pause();
+soundEatingGhost.currentTime = 0;
+soundGhostRunningAway.pause();
+soundGhostRunningAway.currentTime = 0;
 
-	soundEatingGhost.play();
-	setTimeout(() => {
-	  soundGhostRunningAway.play();
-	}, 1000);
-  }
+soundEatingGhost.play();
+setTimeout(() => {
+	soundGhostRunningAway.play();
+}, 1000);
+}
 
-  export function playPacManEatingPelletsSound() {
-	soundPacManEatingPellets.pause(); // Stop the sound if it's already playing
-	soundPacManEatingPellets.currentTime = 0; // Reset to the beginning
-	soundPacManEatingPellets.play(); // Play the sound
-  }
-  
-  export function stopPacManEatingPelletsSound() {
-	soundPacManEatingPellets.pause(); // Stop the sound
-	soundPacManEatingPellets.currentTime = 0; // Reset to the beginning
-  }
+export function playPacManEatingPelletsSound() {
+soundPacManEatingPellets.pause(); // Stop the sound if it's already playing
+soundPacManEatingPellets.currentTime = 0; // Reset to the beginning
+soundPacManEatingPellets.play(); // Play the sound
+}
+
+export function stopPacManEatingPelletsSound() {
+soundPacManEatingPellets.pause(); // Stop the sound
+soundPacManEatingPellets.currentTime = 0; // Reset to the beginning
+}
 
 // Variable to track the current siren
 let currentSiren = soundGhostSiren1; // Start with siren 1

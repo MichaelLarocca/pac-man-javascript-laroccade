@@ -1,4 +1,4 @@
-import { squares, overlayArrayTitleScreen } from './game-board.js';
+import { squares, overlayArrayTitleScreen, overlayArrayScoreScreen } from './game-board.js';
 import { ghostSize, eyeSize } from './helper-functions.js';
 
 export function setTitleScreen() {

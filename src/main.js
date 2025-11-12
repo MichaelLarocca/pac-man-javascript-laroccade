@@ -4,8 +4,8 @@
 import './styles/style.scss'
 import { buildGameBoard } from './js/game-board.js';
 import { width, toggleGameBoardSize, pacmanCurrentIndex, pacManDirection, pacmanCurrentDirection, control, score, highScore, fruitBonus, levelCurrent, level, fruitBonusCurrent, loseLife, ctnPacManLives, checkForHighScore, player1Start } from './js/helper-functions.js';
-import { squares, gameGrid, buildTheBoard, setTitleScreen, setScoreScreen, addBlinkToPressStart, removeBlinkFromPressStart } from './js/game-board.js';
-
+import { squares, gameGrid, buildTheBoard } from './js/game-board.js';
+import { addBlinkToPressStart, removeBlinkFromPressStart, setScoreScreen, setTitleScreen } from './js/screens.js';
 let intervalTitleAndScoreScreen = null;
 
 buildTheBoard();

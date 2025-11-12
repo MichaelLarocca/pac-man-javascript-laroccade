@@ -1,6 +1,7 @@
-import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setLairText, setTitleScreen, reSetLairTextColor, setTunnel, pelletState, intersectionIndices } from './game-board.js';
+import { squares, buildGameBoard, setGameBoard, roundOutTheGameboard, setTunnel, pelletState, intersectionIndices } from './game-board.js';
 import { flagToggled, startToggleTitleAndScoreScreen, endToggleTitleAndScoreScreen } from '../main.js';
 import { playSiren, stopSiren, switchToSiren2, stopPacManEatingPelletsSound, playPacManEatingPelletsSound, playGhostEatenSounds, stopAllSounds, soundGameStart, soundPacManEatingPellets, soundPacManEatingFruit, soundGhostSiren1, soundCutscene, soundDeath, soundEatingGhost, soundGhostRunningAway, soundGhostSiren2, soundHighScore, soundPowerUp } from './audio.js';
+import { setTitleScreen, setScoreScreen, addBlinkToPressStart, removeBlinkFromPressStart, setLairText, reSetLairTextColor } from './screens.js';
 
 // DOM queries
 const ctnGame = document.getElementById('ctn-game');
